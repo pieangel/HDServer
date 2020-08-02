@@ -30,7 +30,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -91,11 +91,14 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\Project\smserver\Include;C:\Project\boost_1_70_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>C:\Project\smserver\Lib;C:\Project\boost_1_70_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ta_abstract_cdr.lib;ta_common_cdr.lib;ta_func_cdr.lib;ta_libc_cdr.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -137,13 +140,16 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\Project\smserver\Include;C:\Project\boost_1_70_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Project\smserver\Lib;C:\Project\boost_1_70_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ta_abstract_cdr.lib;ta_common_cdr.lib;ta_func_cdr.lib;ta_libc_cdr.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -183,27 +189,290 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Account\SmAccount.h" />
+    <ClInclude Include="Account\SmAccountManager.h" />
+    <ClInclude Include="Account\SmAccountNumGenerator.h" />
+    <ClInclude Include="Ai\SmAIIndicatorManager.h" />
+    <ClInclude Include="Ai\SmCorrelationManager.h" />
+    <ClInclude Include="Chart\SmChartData.h" />
+    <ClInclude Include="Chart\SmChartDataManager.h" />
+    <ClInclude Include="Chart\SmChartDefine.h" />
+    <ClInclude Include="Chart\SmTimeSeriesCollector.h" />
     <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="Config\SmConfigManager.h" />
+    <ClInclude Include="Database\SmMongoDBManager.h" />
+    <ClInclude Include="Database\SmTimeSeriesDBManager.h" />
+    <ClInclude Include="Format\core.h" />
+    <ClInclude Include="Format\format-inl.h" />
+    <ClInclude Include="Format\format.h" />
+    <ClInclude Include="Format\ostream.h" />
+    <ClInclude Include="Format\posix.h" />
+    <ClInclude Include="Format\printf.h" />
+    <ClInclude Include="Format\ranges.h" />
+    <ClInclude Include="Format\time.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Global\SmGlobal.h" />
+    <ClInclude Include="Global\TemplateSingleton.h" />
+    <ClInclude Include="Grid\CellRange.h" />
+    <ClInclude Include="Grid\GridCell.h" />
+    <ClInclude Include="Grid\GridCellBase.h" />
+    <ClInclude Include="Grid\GridCtrl.h" />
+    <ClInclude Include="Grid\GridDropTarget.h" />
+    <ClInclude Include="Grid\InPlaceEdit.h" />
+    <ClInclude Include="Grid\MemDC.h" />
+    <ClInclude Include="Grid\TitleTip.h" />
+    <ClInclude Include="HDCtrl\hdfcommagent.h" />
+    <ClInclude Include="HDCtrl\SmHdClient.h" />
+    <ClInclude Include="HDCtrl\SmHdCtrl.h" />
     <ClInclude Include="HDServer.h" />
     <ClInclude Include="HDServerDoc.h" />
     <ClInclude Include="HDServerView.h" />
+    <ClInclude Include="Json\json.hpp" />
+    <ClInclude Include="Log\loguru.hpp" />
+    <ClInclude Include="Log\SmLogManager.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Market\SmCategory.h" />
+    <ClInclude Include="Market\SmMarket.h" />
+    <ClInclude Include="Market\SmMarketManager.h" />
+    <ClInclude Include="Market\SmProductYearMonth.h" />
+    <ClInclude Include="Order\SmAccountOrderManager.h" />
+    <ClInclude Include="Order\SmOrder.h" />
+    <ClInclude Include="Order\SmOrderDefine.h" />
+    <ClInclude Include="Order\SmOrderManager.h" />
+    <ClInclude Include="Order\SmOrderManagerBase.h" />
+    <ClInclude Include="Order\SmOrderNoGenerator.h" />
+    <ClInclude Include="Order\SmOrderNumberGenerator.h" />
+    <ClInclude Include="Order\SmSymbolOrderManager.h" />
+    <ClInclude Include="Order\SmTotalOrderManager.h" />
+    <ClInclude Include="Order\SmTrade.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Position\SmAccountPositionManager.h" />
+    <ClInclude Include="Position\SmFee.h" />
+    <ClInclude Include="Position\SmPosition.h" />
+    <ClInclude Include="Position\SmTotalPositionManager.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Scheduler\Cron.h" />
+    <ClInclude Include="Scheduler\ctpl.h" />
+    <ClInclude Include="Scheduler\ctpl_stl.h" />
+    <ClInclude Include="Scheduler\InterruptableSleep.h" />
+    <ClInclude Include="Scheduler\Scheduler.h" />
+    <ClInclude Include="Scheduler\SmScheduler.h" />
+    <ClInclude Include="Server\ServerDefine.h" />
+    <ClInclude Include="Server\SmChartServer.h" />
+    <ClInclude Include="Server\SmCommon.h" />
+    <ClInclude Include="Server\SmHttpSession.h" />
+    <ClInclude Include="Server\SmListener.h" />
+    <ClInclude Include="Server\SmSessionManager.h" />
+    <ClInclude Include="Server\SmSessionNumberGenerator.h" />
+    <ClInclude Include="Server\SmWebsocketSession.h" />
+    <ClInclude Include="Service\SmProtocolManager.h" />
+    <ClInclude Include="Service\SmRealtimeSymbolServiceManager.h" />
+    <ClInclude Include="Service\SmServiceDefine.h" />
+    <ClInclude Include="Service\SmServieReqNumGenerator.h" />
+    <ClInclude Include="Service\SmTimeSeriesServiceManager.h" />
+    <ClInclude Include="Sklearn\json.h" />
+    <ClInclude Include="Sklearn\logistic_regression.h" />
+    <ClInclude Include="Sklearn\lsr.h" />
+    <ClInclude Include="Sklearn\matrix.h" />
+    <ClInclude Include="Sklearn\mlr.h" />
+    <ClInclude Include="Sklearn\naive_bayes.h" />
+    <ClInclude Include="Sklearn\noob_pandas.h" />
+    <ClInclude Include="Sklearn\preprocessing.h" />
+    <ClInclude Include="Sklearn\statx.h" />
+    <ClInclude Include="Symbol\SmHogaDefine.h" />
+    <ClInclude Include="Symbol\SmQuoteDefine.h" />
+    <ClInclude Include="Symbol\SmRealtimeRegisterManager.h" />
+    <ClInclude Include="Symbol\SmSymbol.h" />
+    <ClInclude Include="Symbol\SmSymbolManager.h" />
+    <ClInclude Include="Symbol\SmSymbolReader.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Task\BlockingCollection.h" />
+    <ClInclude Include="Timer\cpptime.h" />
+    <ClInclude Include="Time\chrono_io.h" />
+    <ClInclude Include="Time\date.h" />
+    <ClInclude Include="Time\ios.h" />
+    <ClInclude Include="Time\islamic.h" />
+    <ClInclude Include="Time\iso_week.h" />
+    <ClInclude Include="Time\julian.h" />
+    <ClInclude Include="Time\ptz.h" />
+    <ClInclude Include="Time\tz.h" />
+    <ClInclude Include="Time\tz_private.h" />
+    <ClInclude Include="User\SmUser.h" />
+    <ClInclude Include="User\SmUserManager.h" />
+    <ClInclude Include="Util\SmStringConverter.h" />
+    <ClInclude Include="Util\SmUtfUtil.h" />
+    <ClInclude Include="Util\SmUtil.h" />
+    <ClInclude Include="Util\UtfConverter.h" />
+    <ClInclude Include="Util\VtStringUtil.h" />
+    <ClInclude Include="Xml\pugiconfig.hpp" />
+    <ClInclude Include="Xml\pugixml.hpp" />
+    <ClInclude Include="Xml\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Account\SmAccount.cpp" />
+    <ClCompile Include="Account\SmAccountManager.cpp" />
+    <ClCompile Include="Account\SmAccountNumGenerator.cpp" />
+    <ClCompile Include="Ai\SmAIIndicatorManager.cpp" />
+    <ClCompile Include="Ai\SmCorrelationManager.cpp" />
+    <ClCompile Include="Chart\SmChartData.cpp" />
+    <ClCompile Include="Chart\SmChartDataManager.cpp" />
+    <ClCompile Include="Chart\SmTimeSeriesCollector.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="Config\SmConfigManager.cpp" />
+    <ClCompile Include="Database\SmMongoDBManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Database\SmTimeSeriesDBManager.cpp" />
+    <ClCompile Include="Format\format.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Format\posix.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Global\SmGlobal.cpp" />
+    <ClCompile Include="Grid\GridCell.cpp" />
+    <ClCompile Include="Grid\GridCellBase.cpp" />
+    <ClCompile Include="Grid\GridCtrl.cpp" />
+    <ClCompile Include="Grid\GridDropTarget.cpp" />
+    <ClCompile Include="Grid\InPlaceEdit.cpp" />
+    <ClCompile Include="Grid\TitleTip.cpp" />
+    <ClCompile Include="HDCtrl\hdfcommagent.cpp" />
+    <ClCompile Include="HDCtrl\SmHdClient.cpp" />
+    <ClCompile Include="HDCtrl\SmHdCtrl.cpp" />
     <ClCompile Include="HDServer.cpp" />
     <ClCompile Include="HDServerDoc.cpp" />
     <ClCompile Include="HDServerView.cpp" />
+    <ClCompile Include="Log\loguru.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Log\SmLogManager.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="Market\SmCategory.cpp" />
+    <ClCompile Include="Market\SmMarket.cpp" />
+    <ClCompile Include="Market\SmMarketManager.cpp" />
+    <ClCompile Include="Market\SmProductYearMonth.cpp" />
+    <ClCompile Include="Order\SmAccountOrderManager.cpp" />
+    <ClCompile Include="Order\SmOrderManager.cpp" />
+    <ClCompile Include="Order\SmOrderNumberGenerator.cpp" />
+    <ClCompile Include="Order\SmSymbolOrderManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Order\SmTotalOrderManager.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Position\SmAccountPositionManager.cpp" />
+    <ClCompile Include="Position\SmTotalPositionManager.cpp" />
+    <ClCompile Include="Scheduler\SmScheduler.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Server\SmChartServer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Server\SmCommon.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Server\SmHttpSession.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Server\SmListener.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Server\SmSessionManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Server\SmSessionNumberGenerator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Server\SmWebsocketSession.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Service\SmProtocolManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Service\SmRealtimeSymbolServiceManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Service\SmServieReqNumGenerator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Service\SmTimeSeriesServiceManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Sklearn\logistic_regression.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Sklearn\lsr.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Sklearn\mlr.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Sklearn\naive_bayes.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Sklearn\preprocessing.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Symbol\SmRealtimeRegisterManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Symbol\SmSymbol.cpp" />
+    <ClCompile Include="Symbol\SmSymbolManager.cpp" />
+    <ClCompile Include="Symbol\SmSymbolReader.cpp" />
+    <ClCompile Include="Time\tz.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="User\SmUser.cpp" />
+    <ClCompile Include="User\SmUserManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Util\SmStringConverter.cpp" />
+    <ClCompile Include="Util\SmUtfUtil.cpp" />
+    <ClCompile Include="Util\SmUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Util\UtfConverter.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Util\VtStringUtil.cpp" />
+    <ClCompile Include="Xml\pugixml.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Xml\tinyxml2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +480,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\HDServer.rc2" />
+    <None Include="Time\ios.mm" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\HDServer.ico" />

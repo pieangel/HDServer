@@ -1,66 +1,664 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{ddcfea8c-6cc8-401e-9653-1ea22eec9660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Account">
+      <UniqueIdentifier>{aef84f9b-4f03-4c8e-b46a-5420051e860a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chart">
+      <UniqueIdentifier>{b52a32ce-d223-44a3-baf5-c1082053f4b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{447176fe-ff11-4e1e-b3ae-1ee396907075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{7613658e-95f2-45af-bbc2-3a5dd0320047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Format">
+      <UniqueIdentifier>{3e3c7c14-e13f-46b0-9c43-2c19db3167ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Global">
+      <UniqueIdentifier>{79d4688f-3d34-4a2b-a41d-d444b6a24554}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Grid">
+      <UniqueIdentifier>{a094cf63-460a-432b-9d48-a654e8440482}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HdClient">
+      <UniqueIdentifier>{8c504233-a907-49f6-842d-52c8c43cc9bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Json">
+      <UniqueIdentifier>{490e9167-7b18-473d-8ca8-27d9348322e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Log">
+      <UniqueIdentifier>{edc787f3-6b47-49c8-9437-2ef5178eade2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Symbol">
+      <UniqueIdentifier>{dd17f4ec-8d42-4a5c-bd68-5781144d459f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Order">
+      <UniqueIdentifier>{0f9f7f0b-d2a6-40cb-ad85-a7d3738cf2e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Position">
+      <UniqueIdentifier>{13c8f42f-a396-4e20-8be8-f609da30b4e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scheduler">
+      <UniqueIdentifier>{4c34b427-75bc-48bd-9ef0-be7cacaf6fec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Server">
+      <UniqueIdentifier>{89738947-1013-454b-99a8-0ee5954ae905}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Service">
+      <UniqueIdentifier>{b42347eb-78a7-47a4-918e-1dca8b69c124}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sklearn">
+      <UniqueIdentifier>{90ae16eb-11db-48c0-b41b-531043bd4acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Market">
+      <UniqueIdentifier>{6dd76777-805f-4102-b34a-51da42fda0b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Task">
+      <UniqueIdentifier>{561d6a9a-8c20-4088-b864-3f20087b6520}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Time">
+      <UniqueIdentifier>{c5d04d30-f766-4f5e-8421-dc237c0d06d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{322a1d4b-5f5d-4811-a841-210a0c5ab5f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User">
+      <UniqueIdentifier>{230c006e-4f0f-4f27-ac19-3fe60473f39b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{2974dfa3-19a1-4fc7-b638-c3405db955d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Xml">
+      <UniqueIdentifier>{cb40f1e6-d100-4e8f-8a90-ecc8b48599cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ai">
+      <UniqueIdentifier>{08f9fa7c-ac17-4a18-a48a-5b02aa140662}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HDServer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ChildFrm.h">
+      <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
-      <Filter>Header Files</Filter>
+      <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MainFrm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChildFrm.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="HDServer.h">
+      <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="HDServerDoc.h">
-      <Filter>Header Files</Filter>
+      <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="HDServerView.h">
-      <Filter>Header Files</Filter>
+      <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\SmAccount.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\SmAccountManager.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\SmAccountNumGenerator.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Ai\SmAIIndicatorManager.h">
+      <Filter>Ai</Filter>
+    </ClInclude>
+    <ClInclude Include="Ai\SmCorrelationManager.h">
+      <Filter>Ai</Filter>
+    </ClInclude>
+    <ClInclude Include="Chart\SmChartData.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="Chart\SmChartDataManager.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="Chart\SmChartDefine.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="Chart\SmTimeSeriesCollector.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\SmConfigManager.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\SmMongoDBManager.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\SmTimeSeriesDBManager.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\core.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\format.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\format-inl.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\ostream.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\posix.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\printf.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\ranges.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\time.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Global\SmGlobal.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Global\TemplateSingleton.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid\CellRange.h">
+      <Filter>Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid\GridCell.h">
+      <Filter>Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid\GridCellBase.h">
+      <Filter>Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid\GridCtrl.h">
+      <Filter>Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid\GridDropTarget.h">
+      <Filter>Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid\InPlaceEdit.h">
+      <Filter>Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid\MemDC.h">
+      <Filter>Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid\TitleTip.h">
+      <Filter>Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="HDCtrl\hdfcommagent.h">
+      <Filter>HdClient</Filter>
+    </ClInclude>
+    <ClInclude Include="HDCtrl\SmHdClient.h">
+      <Filter>HdClient</Filter>
+    </ClInclude>
+    <ClInclude Include="HDCtrl\SmHdCtrl.h">
+      <Filter>HdClient</Filter>
+    </ClInclude>
+    <ClInclude Include="Json\json.hpp">
+      <Filter>Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Log\loguru.hpp">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Log\SmLogManager.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Market\SmCategory.h">
+      <Filter>Market</Filter>
+    </ClInclude>
+    <ClInclude Include="Market\SmMarket.h">
+      <Filter>Market</Filter>
+    </ClInclude>
+    <ClInclude Include="Market\SmMarketManager.h">
+      <Filter>Market</Filter>
+    </ClInclude>
+    <ClInclude Include="Market\SmProductYearMonth.h">
+      <Filter>Market</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\SmAccountOrderManager.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\SmOrder.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\SmOrderDefine.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\SmOrderManager.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\SmOrderManagerBase.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\SmOrderNoGenerator.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\SmOrderNumberGenerator.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Position\SmAccountPositionManager.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Position\SmFee.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Position\SmPosition.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Position\SmTotalPositionManager.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\Cron.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\ctpl.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\ctpl_stl.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\InterruptableSleep.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\Scheduler.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\SmScheduler.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\SmChartServer.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\SmCommon.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\SmHttpSession.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\SmListener.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\SmSessionManager.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\SmSessionNumberGenerator.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\SmWebsocketSession.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Service\SmProtocolManager.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Service\SmRealtimeSymbolServiceManager.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Service\SmServiceDefine.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Service\SmServieReqNumGenerator.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Service\SmTimeSeriesServiceManager.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Sklearn\json.h">
+      <Filter>Sklearn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sklearn\logistic_regression.h">
+      <Filter>Sklearn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sklearn\lsr.h">
+      <Filter>Sklearn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sklearn\matrix.h">
+      <Filter>Sklearn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sklearn\mlr.h">
+      <Filter>Sklearn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sklearn\naive_bayes.h">
+      <Filter>Sklearn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sklearn\noob_pandas.h">
+      <Filter>Sklearn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sklearn\preprocessing.h">
+      <Filter>Sklearn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sklearn\statx.h">
+      <Filter>Sklearn</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\SmHogaDefine.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\SmQuoteDefine.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\SmRealtimeRegisterManager.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\SmSymbol.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\SmSymbolManager.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\SmSymbolReader.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\BlockingCollection.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\chrono_io.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\date.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\ios.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\islamic.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\iso_week.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\julian.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\ptz.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\tz.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\tz_private.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer\cpptime.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="User\SmUser.h">
+      <Filter>User</Filter>
+    </ClInclude>
+    <ClInclude Include="User\SmUserManager.h">
+      <Filter>User</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\SmUtfUtil.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\UtfConverter.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\VtStringUtil.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\pugiconfig.hpp">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\pugixml.hpp">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\tinyxml2.h">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\SmUtil.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\SmTotalOrderManager.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\SmTrade.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\SmSymbolOrderManager.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\ServerDefine.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\SmStringConverter.h">
+      <Filter>Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HDServer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MainFrm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ChildFrm.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="HDServer.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="HDServerDoc.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="HDServerView.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\SmAccount.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\SmAccountManager.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\SmAccountNumGenerator.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Ai\SmAIIndicatorManager.cpp">
+      <Filter>Ai</Filter>
+    </ClCompile>
+    <ClCompile Include="Ai\SmCorrelationManager.cpp">
+      <Filter>Ai</Filter>
+    </ClCompile>
+    <ClCompile Include="Chart\SmChartData.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="Chart\SmChartDataManager.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="Chart\SmTimeSeriesCollector.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\SmConfigManager.cpp">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\SmMongoDBManager.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\SmTimeSeriesDBManager.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Format\format.cc">
+      <Filter>Format</Filter>
+    </ClCompile>
+    <ClCompile Include="Format\posix.cc">
+      <Filter>Format</Filter>
+    </ClCompile>
+    <ClCompile Include="Global\SmGlobal.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid\GridCell.cpp">
+      <Filter>Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid\GridCellBase.cpp">
+      <Filter>Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid\GridCtrl.cpp">
+      <Filter>Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid\GridDropTarget.cpp">
+      <Filter>Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid\InPlaceEdit.cpp">
+      <Filter>Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid\TitleTip.cpp">
+      <Filter>Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="HDCtrl\hdfcommagent.cpp">
+      <Filter>HdClient</Filter>
+    </ClCompile>
+    <ClCompile Include="HDCtrl\SmHdClient.cpp">
+      <Filter>HdClient</Filter>
+    </ClCompile>
+    <ClCompile Include="HDCtrl\SmHdCtrl.cpp">
+      <Filter>HdClient</Filter>
+    </ClCompile>
+    <ClCompile Include="Log\loguru.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="Log\SmLogManager.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="Market\SmCategory.cpp">
+      <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="Market\SmMarket.cpp">
+      <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="Market\SmMarketManager.cpp">
+      <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="Market\SmProductYearMonth.cpp">
+      <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\SmAccountOrderManager.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\SmOrderManager.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\SmOrderNumberGenerator.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="Position\SmAccountPositionManager.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Position\SmTotalPositionManager.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Scheduler\SmScheduler.cpp">
+      <Filter>Scheduler</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\SmChartServer.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\SmCommon.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\SmHttpSession.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\SmListener.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\SmSessionManager.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\SmSessionNumberGenerator.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\SmWebsocketSession.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Service\SmProtocolManager.cpp">
+      <Filter>Service</Filter>
+    </ClCompile>
+    <ClCompile Include="Service\SmRealtimeSymbolServiceManager.cpp">
+      <Filter>Service</Filter>
+    </ClCompile>
+    <ClCompile Include="Service\SmServieReqNumGenerator.cpp">
+      <Filter>Service</Filter>
+    </ClCompile>
+    <ClCompile Include="Service\SmTimeSeriesServiceManager.cpp">
+      <Filter>Service</Filter>
+    </ClCompile>
+    <ClCompile Include="Sklearn\logistic_regression.cpp">
+      <Filter>Sklearn</Filter>
+    </ClCompile>
+    <ClCompile Include="Sklearn\lsr.cpp">
+      <Filter>Sklearn</Filter>
+    </ClCompile>
+    <ClCompile Include="Sklearn\mlr.cpp">
+      <Filter>Sklearn</Filter>
+    </ClCompile>
+    <ClCompile Include="Sklearn\naive_bayes.cpp">
+      <Filter>Sklearn</Filter>
+    </ClCompile>
+    <ClCompile Include="Sklearn\preprocessing.cpp">
+      <Filter>Sklearn</Filter>
+    </ClCompile>
+    <ClCompile Include="Symbol\SmRealtimeRegisterManager.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="Symbol\SmSymbol.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="Symbol\SmSymbolManager.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="Symbol\SmSymbolReader.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="Time\tz.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
+    <ClCompile Include="User\SmUser.cpp">
+      <Filter>User</Filter>
+    </ClCompile>
+    <ClCompile Include="User\SmUserManager.cpp">
+      <Filter>User</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\SmUtfUtil.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\UtfConverter.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\VtStringUtil.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\pugixml.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\tinyxml2.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\SmUtil.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\SmTotalOrderManager.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\SmSymbolOrderManager.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\SmStringConverter.cpp">
+      <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +669,9 @@
   <ItemGroup>
     <None Include="res\HDServer.rc2">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Time\ios.mm">
+      <Filter>Time</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
