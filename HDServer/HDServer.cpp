@@ -51,6 +51,75 @@ CHDServerApp::CHDServerApp() noexcept
 	// Place all significant initialization in InitInstance
 }
 
+int CHDServerApp::RegisterOCX(CString strFileName)
+{
+#ifdef LOGGING
+	CommsDbgLog(0, "RegisterOCX() - start");
+#endif
+	int			iReturn = 1;
+	CString		szErrorMsg;
+
+	strFileName.Replace("'\'", "\\");
+	// Initialize OLE.
+	if (FAILED(OleInitialize(NULL))) {
+		AfxMessageBox("DLLRegister OleInitialize 실패");
+		return 1;
+	}
+
+	SetErrorMode(SEM_FAILCRITICALERRORS);       // Make sure LoadLib fails.
+												// Load the library.
+	HINSTANCE hLib = LoadLibraryEx(strFileName, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+	if (hLib == NULL) {
+		szErrorMsg.Format("File Name=%s, GetLastError() NO = 0x%08lx\n", strFileName, GetLastError());
+		AfxMessageBox(szErrorMsg);
+		iReturn = 0;
+		goto CleanupOle;
+	}
+
+	HRESULT(STDAPICALLTYPE * lpDllEntryPoint)(void);
+	// Find the entry point.
+	(FARPROC&)lpDllEntryPoint = GetProcAddress(hLib, "DllRegisterServer");
+	if (lpDllEntryPoint == NULL) {
+		// 		TCHAR szExt[_MAX_EXT];
+		// 		_tsplitpath(strFileName, NULL, NULL, NULL, szExt);
+
+		TCHAR drive[255];
+		TCHAR szExt[255];
+		TCHAR path[MAX_PATH];
+		TCHAR filename[MAX_PATH];
+		_tsplitpath_s((LPTSTR)(LPCTSTR)strFileName, drive, _countof(drive), path, _countof(path), filename, _countof(filename), szExt, _countof(szExt));
+
+		if ((_stricmp(szExt, ".dll") != 0) && (_stricmp(szExt, ".ocx") != 0)) {
+			szErrorMsg.Format("File Name=%s, GetProcAddress Fail\n", strFileName);
+			AfxMessageBox(szErrorMsg);
+		}
+
+		iReturn = 0;
+		goto CleanupLibrary;
+	}
+
+	// Call the entry point.
+	if (FAILED((*lpDllEntryPoint)())) {
+		szErrorMsg.Format("File Name=%s, lpDllEntryPoint Fail\n", strFileName);
+		AfxMessageBox(szErrorMsg);
+		iReturn = 0;
+		goto CleanupLibrary;
+	}
+	return iReturn;
+
+CleanupLibrary:
+	FreeLibrary(hLib);
+
+CleanupOle:
+	OleUninitialize();
+
+#ifdef LOGGING
+	CommsDbgLog(0, "RegisterOCX() - end");
+#endif
+
+	return iReturn;
+}
+
 // The one and only CHDServerApp object
 
 CHDServerApp theApp;
@@ -86,6 +155,15 @@ BOOL CHDServerApp::InitInstance()
 
 	// AfxInitRichEdit2() is required to use RichEdit control
 	// AfxInitRichEdit2();
+
+	// 챠트 OCX 파일 등록 처리
+	TCHAR iniFileName[500] = { 0 };
+
+	GetModuleFileName(NULL, iniFileName, MAX_PATH);
+	CString path = iniFileName;
+	CString fileName = path.Left(path.ReverseFind('\\') + 1);
+	fileName = fileName += "HDFCommAgent.ocx";
+	RegisterOCX(fileName);
 
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size

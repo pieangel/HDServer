@@ -17,12 +17,16 @@ public:
 	/// <returns></returns>
 	std::shared_ptr<SmProduct> AddProduct(std::string code);
 	std::shared_ptr<SmProduct> FindProduct(std::string code);
+	std::shared_ptr<SmProduct> FindAddProduct(std::string code);
 	std::vector<std::shared_ptr<SmProduct>>& GetCategoryList() {
 		return _CategoryList;
 	}
 	int Index() const { return _Index; }
 	void Index(int val) { _Index = val; }
+	std::string MarketCode() const { return _MarketCode; }
+	void MarketCode(std::string val) { _MarketCode = val; }
 private:
+	std::string _MarketCode;
 	std::string _Name;
 	int _Index;
 	std::vector<std::shared_ptr<SmProduct>> _CategoryList;

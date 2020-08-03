@@ -83,6 +83,15 @@
     <Filter Include="Ai">
       <UniqueIdentifier>{08f9fa7c-ac17-4a18-a48a-5b02aa140662}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Login">
+      <UniqueIdentifier>{f2bd9fb4-45d8-479b-ae1b-8496bab9e885}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archieve">
+      <UniqueIdentifier>{2d94623c-d95c-411a-b1ba-1eb7676ccb82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File">
+      <UniqueIdentifier>{afa974d0-c42b-4db3-99a9-4e308ac916b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -490,6 +499,33 @@
     <ClInclude Include="Symbol\SmRunInfo.h">
       <Filter>Symbol</Filter>
     </ClInclude>
+    <ClInclude Include="Login\VtLogInDlg.h">
+      <Filter>Login</Filter>
+    </ClInclude>
+    <ClInclude Include="Login\VtLoginManager.h">
+      <Filter>Login</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\BtnST.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\CeXDib.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\ShadeButtonST.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Archieve\VtSaveManager.h">
+      <Filter>Archieve</Filter>
+    </ClInclude>
+    <ClInclude Include="File\fwd.h">
+      <Filter>File</Filter>
+    </ClInclude>
+    <ClInclude Include="File\path.h">
+      <Filter>File</Filter>
+    </ClInclude>
+    <ClInclude Include="File\resolver.h">
+      <Filter>File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -743,6 +779,24 @@
     </ClCompile>
     <ClCompile Include="Util\FontSize.cpp">
       <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Login\VtLogInDlg.cpp">
+      <Filter>Login</Filter>
+    </ClCompile>
+    <ClCompile Include="Login\VtLoginManager.cpp">
+      <Filter>Login</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\BtnST.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\CeXDib.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\ShadeButtonST.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Archieve\VtSaveManager.cpp">
+      <Filter>Archieve</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

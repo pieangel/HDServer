@@ -341,9 +341,9 @@ void ViServerDataReceiver::MakeAccountOrders()
 
 void ViServerDataReceiver::EndAllTask()
 {
-// 	SmMarketManager::GetInstance()->MakeFavoriteList();
-// 	((CMainFrame*)AfxGetMainWnd())->StopTimer();
-// 	((CMainFrame*)AfxGetMainWnd())->HideProgress();
+	//SmMarketManager::GetInstance()->MakeFavoriteList();
+	((CMainFrame*)AfxGetMainWnd())->StopTimer();
+	((CMainFrame*)AfxGetMainWnd())->HideProgress();
 }
 
 void ViServerDataReceiver::MakeChartDataRequests()
@@ -400,65 +400,65 @@ void ViServerDataReceiver::MakeChartDataRequests()
 void ViServerDataReceiver::StartGetSymbolMaster()
 {
 	MakeSymbolMasterRequests();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(10);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(10);
 }
 
 void ViServerDataReceiver::StartGetSymbol()
 {
 	MakeSymbolRequests();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(1100);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(1100);
 }
 
 void ViServerDataReceiver::StartGetCSise()
 {
 	MakeSymbolSiseRequests();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(10);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(10);
 }
 
 void ViServerDataReceiver::StartGetHoga()
 {
 	MakeSymbolHogaRequests();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(10);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(10);
 }
 
 void ViServerDataReceiver::StartGetAccountAsset()
 {
 	MakeAccountAssetRequests();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(700);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(700);
 }
 
 void ViServerDataReceiver::StartGetProductRemain()
 {
 	MakeRemainRequests();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(700);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(700);
 }
 
 void ViServerDataReceiver::StartGetAccountOrder()
 {
 	MakeAccountOrders();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(700);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(700);
 }
 
 void ViServerDataReceiver::StartGetAccountProfitLoss()
 {
 	MakeAccoutProfitLoss();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(700);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(700);
 }
 
 void ViServerDataReceiver::StartGetChartData()
 {
 	MakeChartDataRequests();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(700);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(700);
 }
 
 void ViServerDataReceiver::StartGetDmSymbolCode()
 {
 	MakeDmSymbolCodeRequests();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(500);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(500);
 }
 
 void ViServerDataReceiver::StartGetDmSymbolMaster()
 {
 	MakeDmSymbolMasterRequests();
-	//((CMainFrame*)AfxGetMainWnd())->StartTimer(10);
+	((CMainFrame*)AfxGetMainWnd())->StartTimer(10);
 }

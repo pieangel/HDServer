@@ -42,7 +42,10 @@ public:
 	}
 	void LoadRunInfo();
 	std::vector<SmRunInfo> GetRunInfoList();
+	void AddProduct(std::shared_ptr<SmProduct> product);
 private:
+	// 국내 시장과 제품목록을 초기화 한다.
+	void InitDmMarketProducts();
 	void AddFutureRunInfo(SmRunInfo run_info);
 	void AddOptionRunInfo(SmRunInfo run_info);
 	// 국내선물 목록을 초기화 한다.
@@ -70,5 +73,7 @@ private:
 	std::vector<SmRunInfo> _FutureRunVector;
 	// 국내 옵션 모든 목록
 	std::vector<SmRunInfo> _OptionRunVector;
+	// 제품 목록 맵
+	std::map<std::string, std::shared_ptr<SmProduct>> _ProductMap;
 };
 

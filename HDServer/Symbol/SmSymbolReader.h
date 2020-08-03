@@ -15,6 +15,7 @@ private:
 	void ReadMarketFile(std::string fullPath);
 	void ReadPmFile(std::string fullPath);
 	void ReadJmFile(std::string fullPath);
+public:
 	void ReadMarketFile();
 	void ReadPmFile();
 	void ReadJmFile();

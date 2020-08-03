@@ -434,7 +434,7 @@ void HdClient::OnGetMsgWithRqId(int& nRqId, CString& strCode, CString& strMsg)
 	// 해외 종목 메모리 로드가 끝나면 다음 과정을 시작한다.
 	if (strCode.Compare("0332") == 0) {
 		CMainFrame* mf = (CMainFrame*)AfxGetMainWnd();
-		//mf->StartProcess();
+		mf->StartProcess();
 	}
 	if (_ttoi(strCode) != 0) {
 		OnTaskComplete(nRqId);

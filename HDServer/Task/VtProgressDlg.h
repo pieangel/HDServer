@@ -9,7 +9,7 @@
 #include "../MainFrm.h"
 
 // VtProgressDlg dialog
-class CViDataCollectorDlg;
+class CMainFrame;
 class VtProgressDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtProgressDlg)
@@ -49,7 +49,7 @@ public:
 	virtual void OnCancel();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	void SetTaskInfo(std::string msg);
-	CViDataCollectorDlg* MainFrm = nullptr;
+	CMainFrame* MainFrm = nullptr;
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	void RefreshProgress();

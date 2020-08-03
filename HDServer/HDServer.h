@@ -19,7 +19,7 @@ class CHDServerApp : public CWinApp
 public:
 	CHDServerApp() noexcept;
 
-
+	int RegisterOCX(CString strFileName);
 // Overrides
 public:
 	virtual BOOL InitInstance();

@@ -38,7 +38,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -194,6 +194,7 @@
     <ClInclude Include="Account\SmAccountNumGenerator.h" />
     <ClInclude Include="Ai\SmAIIndicatorManager.h" />
     <ClInclude Include="Ai\SmCorrelationManager.h" />
+    <ClInclude Include="Archieve\VtSaveManager.h" />
     <ClInclude Include="Chart\SmChartData.h" />
     <ClInclude Include="Chart\SmChartDataManager.h" />
     <ClInclude Include="Chart\SmChartDefine.h" />
@@ -202,6 +203,9 @@
     <ClInclude Include="Config\SmConfigManager.h" />
     <ClInclude Include="Database\SmMongoDBManager.h" />
     <ClInclude Include="Database\SmTimeSeriesDBManager.h" />
+    <ClInclude Include="File\fwd.h" />
+    <ClInclude Include="File\path.h" />
+    <ClInclude Include="File\resolver.h" />
     <ClInclude Include="Format\core.h" />
     <ClInclude Include="Format\format-inl.h" />
     <ClInclude Include="Format\format.h" />
@@ -232,6 +236,8 @@
     <ClInclude Include="HDServerDoc.h" />
     <ClInclude Include="HDServerView.h" />
     <ClInclude Include="Json\json.hpp" />
+    <ClInclude Include="Login\VtLogInDlg.h" />
+    <ClInclude Include="Login\VtLoginManager.h" />
     <ClInclude Include="Log\loguru.hpp" />
     <ClInclude Include="Log\SmLogManager.h" />
     <ClInclude Include="MainFrm.h" />
@@ -312,9 +318,12 @@
     <ClInclude Include="Time\tz_private.h" />
     <ClInclude Include="User\SmUser.h" />
     <ClInclude Include="User\SmUserManager.h" />
+    <ClInclude Include="Util\BtnST.h" />
+    <ClInclude Include="Util\CeXDib.h" />
     <ClInclude Include="Util\cryptor.hpp" />
     <ClInclude Include="Util\FontSize.h" />
     <ClInclude Include="Util\GradientStatic.h" />
+    <ClInclude Include="Util\ShadeButtonST.h" />
     <ClInclude Include="Util\SmStringConverter.h" />
     <ClInclude Include="Util\SmUtfUtil.h" />
     <ClInclude Include="Util\SmUtil.h" />
@@ -331,6 +340,7 @@
     <ClCompile Include="Account\SmAccountNumGenerator.cpp" />
     <ClCompile Include="Ai\SmAIIndicatorManager.cpp" />
     <ClCompile Include="Ai\SmCorrelationManager.cpp" />
+    <ClCompile Include="Archieve\VtSaveManager.cpp" />
     <ClCompile Include="Chart\SmChartData.cpp" />
     <ClCompile Include="Chart\SmChartDataManager.cpp" />
     <ClCompile Include="Chart\SmTimeSeriesCollector.cpp" />
@@ -364,6 +374,8 @@
     <ClCompile Include="HDServer.cpp" />
     <ClCompile Include="HDServerDoc.cpp" />
     <ClCompile Include="HDServerView.cpp" />
+    <ClCompile Include="Login\VtLogInDlg.cpp" />
+    <ClCompile Include="Login\VtLoginManager.cpp" />
     <ClCompile Include="Log\loguru.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -480,8 +492,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Util\BtnST.cpp" />
+    <ClCompile Include="Util\CeXDib.cpp" />
     <ClCompile Include="Util\FontSize.cpp" />
     <ClCompile Include="Util\GradientStatic.cpp" />
+    <ClCompile Include="Util\ShadeButtonST.cpp" />
     <ClCompile Include="Util\SmStringConverter.cpp" />
     <ClCompile Include="Util\SmUtfUtil.cpp" />
     <ClCompile Include="Util\SmUtil.cpp">

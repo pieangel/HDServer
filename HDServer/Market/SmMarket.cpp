@@ -33,3 +33,13 @@ std::shared_ptr<SmProduct> SmMarket::FindProduct(std::string code)
 
 	return nullptr;
 }
+
+std::shared_ptr<SmProduct> SmMarket::FindAddProduct(std::string code)
+{
+	std::shared_ptr<SmProduct> product = FindProduct(code);
+	if (!product) {
+		product = AddProduct(code);
+	}
+
+	return product;
+}
