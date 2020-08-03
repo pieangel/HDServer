@@ -10,6 +10,7 @@ public:
 	SmRealtimeRegisterManager();
 	~SmRealtimeRegisterManager();
 	void RegisterProduct(std::string symCode);
+	void UnregisterAllProducts();
 private:
 	std::set<std::string> _RegisteredProduct;
 };

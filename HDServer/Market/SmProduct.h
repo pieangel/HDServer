@@ -69,5 +69,10 @@ private:
 	std::string _MarketCode;
 	std::vector<std::shared_ptr<SmSymbol>> _SymbolList;
 	std::map<std::string, std::shared_ptr<SmProductYearMonth>> _YearMonthMap;
+
+	std::map<std::string, std::string> _DomesticYearTable;
+	std::map<std::string, std::string> _DomesticMonthTable;
+	std::map<std::string, std::string> _AbroadMonthTable;
+	int dow(int y, int m, int d);
 };
 

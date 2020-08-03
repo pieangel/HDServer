@@ -302,15 +302,18 @@ void SmSymbolReader::ReadJmFile(std::string fullPath)
 		TRACE(msg);
 
 		SmSymbolManager* symMgr = SmSymbolManager::GetInstance();
-		std::shared_ptr<SmProduct> cat = marketMgr->FindProduct(MrktCd);
-		if (cat) {
-			std::shared_ptr<SmSymbol> sym = cat->AddSymbol(Series);
+		std::shared_ptr<SmProduct> product = marketMgr->FindProduct(MrktCd);
+		if (product) {
+			std::shared_ptr<SmSymbol> sym = product->AddSymbol(Series);
+
+			product->AddToYearMonth(sym->SymbolCode(), sym);
+
 			sym->Index(std::stoi(IndexCode));
 			sym->Name(SeriesNmKor);
 			sym->NameEn(SeriesNm);
 			symMgr->AddSymbol(sym);
-			sym->CategoryCode(cat->Code());
-			sym->MarketName(cat->MarketName());
+			sym->CategoryCode(product->Code());
+			sym->MarketName(product->MarketName());
 			sym->Decimal(std::stoi(Pdesz));
 			sym->Seungsu(std::stoi(MltiPler));
 			sym->CtrUnit(std::stod(CtrtSize));
@@ -321,9 +324,6 @@ void SmSymbolReader::ReadJmFile(std::string fullPath)
 			//dbMgr->SaveSymbol(sym);
 
 			double profit = sym->TickSize() * sym->CtrUnit();
-			if (Series.compare("CLQ19") == 0) {
-				int k = 0;
-			}
 		}
 	}
 }

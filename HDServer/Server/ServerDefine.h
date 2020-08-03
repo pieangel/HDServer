@@ -18,16 +18,6 @@
 #include <thread>
 #include <vector>
 
-// #ifndef max
-// #define max(a,b) (((a) > (b)) ? (a) : (b))
-// #endif
-// #ifndef min
-// #define min(a,b) (((a) < (b)) ? (a) : (b))
-// #endif
-// #undef max
-// #undef min
-// using namespace std;
-
 namespace beast = boost::beast;                 // from <boost/beast.hpp>
 namespace http = beast::http;                   // from <boost/beast/http.hpp>
 namespace websocket = beast::websocket;         // from <boost/beast/websocket.hpp>

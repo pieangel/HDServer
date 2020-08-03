@@ -7,6 +7,7 @@
 #include "HDServer.h"
 
 #include "MainFrm.h"
+#include "Server/SmChartServer.h"
 
 #include "Login/VtLogInDlg.h"
 #include "Archieve/VtSaveManager.h"
@@ -32,6 +33,14 @@
 #include "Config/SmConfigManager.h"
 #include "Service/SmProtocolManager.h"
 #include "Database/SmTimeSeriesDBManager.h"
+#include "Symbol/SmSymbol.h"
+#include "Account/SmAccountManager.h"
+#include "Order/SmTotalOrderManager.h"
+#include "Order/SmOrderNumberGenerator.h"
+#include "Position/SmTotalPositionManager.h"
+#include "Global/SmGlobal.h"
+#include "Service/SmTimeSeriesServiceManager.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -135,11 +144,15 @@ void CMainFrame::OnClientLogin()
 
 void CMainFrame::ClearAllResources()
 {
+	// 실시간 등록 해제
+	SmRealtimeRegisterManager::GetInstance()->UnregisterAllProducts();
 	// 증권사 이벤트를 막는다.
 	HdClient::GetInstance()->Enable(false);
 	// 시세 수집과 호가 수집을 멈춘다.
 	SmRealtimeHogaManager::GetInstance()->Enable(false);
 	SmRealtimeQuoteManager::GetInstance()->Enable(false);
+	// 서버를 멈춘다.
+	StopServer();
 
 	SmMongoDBManager::DestroyInstance();
 	SmSymbolManager::DestroyInstance();
@@ -158,10 +171,17 @@ void CMainFrame::ClearAllResources()
 	SmConfigManager::DestroyInstance();
 	SmProtocolManager::DestroyInstance();
 	SmTimeSeriesDBManager::DestroyInstance();
+
+	SmAccountManager::DestroyInstance();
+	SmTotalOrderManager::DestroyInstance();
+	SmTotalPositionManager::DestroyInstance();
+	SmGlobal::DestroyInstance();
+	SmTimeSeriesServiceManager::DestroyInstance();
 }
 
 void CMainFrame::StartProcess()
 {
+	// 해외 종목 정보를 읽어 온다.
 	SmSymbolReader* symbol_reader = SmSymbolReader::GetInstance();
 	symbol_reader->ReadMarketFile();
 	symbol_reader->ReadPmFile();
@@ -202,13 +222,61 @@ void CMainFrame::HideProgress()
 		ProgressDlg->ShowWindow(SW_HIDE);
 		ProgressDlg->DestroyWindow();
 	}
+
+	// 서버 설정을 읽어 온다.
+	ReadConfig();
+	// 서버를 시작한다.
+	StartServer();
+
+	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
+	std::vector<std::shared_ptr<SmSymbol>> sym_vec = marketMgr->GetRecentMonthSymbolList();
+	for (auto it = sym_vec.begin(); it != sym_vec.end(); ++it) {
+		auto sym = *it;
+		SmRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->SymbolCode().c_str());
+	}
 }
 
 void CMainFrame::ReadConfig()
 {
+	SmMongoDBManager* mongoMgr = SmMongoDBManager::GetInstance();
+	// 시장목록 로드
+	mongoMgr->LoadMarketList();
+	// 심볼 목록 로드
+	mongoMgr->LoadSymbolList();
+	// 계좌 목록 로드
+	mongoMgr->LoadAccountList();
+	// 포지션 목록 로드
+	mongoMgr->LoadPositionList();
+	// 시세 로드
+	mongoMgr->LoadRecentQuoteList();
+	// 호가 로드
+	mongoMgr->LoadRecentHogaList();
+	// 접수확인 목록 로드
+	mongoMgr->LoadAcceptedOrderList();
+	// 체결확인 목록 로드
+	mongoMgr->LoadFilledOrderList();
 
+	SmTotalOrderManager* toMgr = SmTotalOrderManager::GetInstance();
+	toMgr->LoadFees();
 }
 
+
+void CMainFrame::StartServer()
+{
+	// TODO: Add your command handler code here
+	_ChartServer = std::make_shared<SmChartServer>();
+
+	// 여기서 데이터베이스에 저장한 마지막 주문번호를 읽어 온다.
+	// 다음 주문은 이번호에서 시작한다.
+	SmOrderNumberGenerator::LoadOrderNo();
+}
+
+void CMainFrame::StopServer()
+{
+	if (_ChartServer) {
+		_ChartServer->Stop();
+	}
+}
 
 void CMainFrame::OnClose()
 {

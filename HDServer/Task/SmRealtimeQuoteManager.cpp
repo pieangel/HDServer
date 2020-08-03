@@ -163,9 +163,9 @@ void SmRealtimeQuoteManager::ExecuteTask(SmQuoteData&& item)
 	if (!sym)
 		return;
 	// 여기서 차트데이터를 업데이트 한다.
-	//sym->UpdateMinData(item);
-	//sym->UpdateTickData(item);
-	//sym->UpdateChartData(item);
+	sym->UpdateMinData(item);
+	sym->UpdateTickData(item);
+	sym->UpdateChartData(item);
 
 	sym->Quote.Close = std::stoi(item.close);
 	sym->Quote.Open = std::stoi(item.open);
@@ -208,9 +208,9 @@ bool SmRealtimeQuoteManager::ExecuteTask(std::array<SmQuoteData, QuoteArraySize>
 			continue;
 
 		// 여기서 차트데이터를 업데이트 한다.
-		//sym->UpdateMinData(item);
-		//sym->UpdateTickData(item);
-		//sym->UpdateChartData(item);
+		sym->UpdateMinData(item);
+		sym->UpdateTickData(item);
+		sym->UpdateChartData(item);
 		// 집합에 심볼을 추가한다.
 		symbol_set.insert(sym);
 		sym->Quote.Close = std::stoi(item.close);

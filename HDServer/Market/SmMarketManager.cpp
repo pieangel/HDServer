@@ -131,13 +131,6 @@ std::vector<std::shared_ptr<SmSymbol>> SmMarketManager::GetRecentMonthSymbolList
 			
 			std::shared_ptr<SmProductYearMonth> ym = (*itc)->GetRecentYearMonth();
 			if (ym) {
-				if (ym->ProductCode.compare("175") == 0) {
-					std::shared_ptr<SmSymbol> recent_symbol = GetRecentSymbol(ym->ProductCode);
-					std::string current_date = VtStringUtil::getCurentDate();
-					if (current_date.compare(recent_symbol->LastDate()) >= 0) {
-						ym = (*itc)->GetNextYearMonth();
-					}
-				}
 				for (auto itym = ym->SymbolList.begin(); itym != ym->SymbolList.end(); ++itym) {
 					(*itym)->Quote.SymbolCode = (*itym)->SymbolCode();
 					symvec.push_back(*itym);

@@ -9,7 +9,7 @@
 #define REQ_TIMER 100
 
 class VtProgressDlg;
-
+class SmChartServer;
 class CMainFrame : public CMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -60,6 +60,11 @@ private:
 	std::string _FleWathPath;
 	bool _EnableFileWatch = false;
 	std::shared_ptr<VtProgressDlg> ProgressDlg = nullptr;
+
+	std::shared_ptr<SmChartServer> _ChartServer = nullptr;
+
+	void StartServer();
+	void StopServer();
 public:
 	afx_msg void OnClose();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

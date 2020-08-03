@@ -29,7 +29,20 @@
 #include <afxcontrolbars.h>     // MFC support for ribbons and control bars
 
 
+#include <algorithm>
 
+#ifndef max
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+#ifndef min
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+
+#include <gdiplus.h>
+#undef max
+#undef min
+
+using namespace std;
 
 
 
