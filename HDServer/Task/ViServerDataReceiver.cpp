@@ -155,10 +155,11 @@ void ViServerDataReceiver::MakeDmSymbolMasterRequests()
 		std::string product_code = (*it).substr(0, 3);
 		std::shared_ptr<SmProduct> product = mrktMgr->FindProduct(product_code);
 		if (product) {
-			std::shared_ptr<SmSymbol> symbol = product->GetRecentMonthSymbol();
-			if (symbol) symbol_list.push_back(symbol);
-			symbol = product->GetNextMonthSymbol();
-			if (symbol) symbol_list.push_back(symbol);
+			std::vector<std::shared_ptr<SmSymbol>>& sym_vec = product->GetSymbolList();
+			for (size_t i = 0; i < sym_vec.size(); ++i) {
+				std::shared_ptr<SmSymbol> symbol = sym_vec[i];
+				symbol_list.push_back(symbol);
+			}
 		}
 	}
 

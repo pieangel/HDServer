@@ -221,16 +221,29 @@ void SmMarketManager::SendSymbolListByCategory(std::string user_id)
 
 void SmMarketManager::SendSymbolListByCategory(int session_id)
 {
-	for (size_t i = 0; i < _MarketList.size(); ++i) {
-		std::shared_ptr<SmMarket> market = _MarketList[i];
-		std::vector<std::shared_ptr<SmProduct>>& cat_list = market->GetCategoryList();
-		for (size_t j = 0; j < cat_list.size(); ++j) {
-			std::shared_ptr<SmProduct> cat = cat_list[j];
-			std::vector<std::shared_ptr<SmSymbol>>& sym_list = cat->GetSymbolList();
-			for (size_t k = 0; k < sym_list.size(); ++k) {
-				SendSymbolMaster(session_id, sym_list[k]);
+	try {
+		int s = 0;
+		for (size_t i = 0; i < _MarketList.size(); ++i) {
+			std::shared_ptr<SmMarket> market = _MarketList[i];
+			std::vector<std::shared_ptr<SmProduct>>& cat_list = market->GetCategoryList();
+			for (size_t j = 0; j < cat_list.size(); ++j) {
+				std::shared_ptr<SmProduct> cat = cat_list[j];
+				std::vector<std::shared_ptr<SmSymbol>>& sym_list = cat->GetSymbolList();
+				for (size_t k = 0; k < sym_list.size(); ++k) {
+					SendSymbolMaster(session_id, sym_list[k]);
+					s++;
+				}
 			}
 		}
+
+
+		s = s + 1;
+	}
+	catch (std::exception& e) {
+		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+	}
+	catch (...) {
+		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
 }
 
@@ -271,7 +284,7 @@ void SmMarketManager::InitDmMarketProducts()
 	AddCategoryMarket(product_code, market_name);
 	product->MarketName(market_name);
 	product->NameKr("국내선물");
-	product->Name("국내선물");
+	product->Name("Kospi200MF");
 
 	product_code = "105";
 	product = market->FindAddProduct(product_code);
@@ -279,7 +292,7 @@ void SmMarketManager::InitDmMarketProducts()
 	AddCategoryMarket(product_code, market_name);
 	product->MarketName(market_name);
 	product->NameKr("코스피200미니선물");
-	product->NameKr("Kospi200MiniF");
+	product->Name("Kospi200MiniF");
 
 	product_code = "106";
 	product = market->FindAddProduct(product_code);
@@ -287,7 +300,7 @@ void SmMarketManager::InitDmMarketProducts()
 	AddCategoryMarket(product_code, market_name);
 	product->MarketName(market_name);
 	product->NameKr("코스닥150선물");
-	product->NameKr("Kosdaqq150F");
+	product->Name("Kosdaqq150F");
 
 	product_code = "167";
 	product = market->FindAddProduct(product_code);
@@ -662,28 +675,37 @@ void SmMarketManager::SendSymbolMaster(int session_id, std::shared_ptr<SmSymbol>
 {
 	if (!sym)
 		return;
-	json send_object;
-	send_object["res_id"] = SmProtocol::res_symbol_master;
-	send_object["total_symbol_count"] = GetTotalSymbolCount();
-	send_object["symbol_code"] = sym->SymbolCode();
-	send_object["category_index"] = sym->Index();
-	send_object["name_kr"] = SmUtfUtil::AnsiToUtf8((char*)sym->Name().c_str());
-	send_object["name_en"] = sym->NameEn().c_str();
-	send_object["category_code"] = sym->CategoryCode();
-	send_object["market_name"] = SmUtfUtil::AnsiToUtf8((char*)sym->MarketName().c_str());
-	send_object["decimal"] = sym->Decimal();
-	send_object["contract_unit"] = sym->CtrUnit();
-	send_object["seungsu"] = sym->Seungsu();
-	send_object["tick_size"] = sym->TickSize();
-	send_object["tick_value"] = sym->TickValue();
-	send_object["atm"] = sym->Atm();
-	send_object["near_month"] = sym->NearMonth();
-	send_object["last_date"] = sym->LastDate();
+	try {
+		json send_object;
+		send_object["res_id"] = SmProtocol::res_symbol_master;
+		send_object["total_symbol_count"] = GetTotalSymbolCount();
+		send_object["symbol_code"] = sym->SymbolCode();
+		send_object["category_index"] = sym->Index();
+		send_object["name_kr"] = SmUtfUtil::AnsiToUtf8((char*)sym->Name().c_str());
+		send_object["name_en"] = sym->NameEn().c_str();
+		send_object["category_code"] = sym->CategoryCode();
+		send_object["market_name"] = SmUtfUtil::AnsiToUtf8((char*)sym->MarketName().c_str());
+		send_object["decimal"] = sym->Decimal();
+		send_object["contract_unit"] = sym->CtrUnit();
+		send_object["seungsu"] = sym->Seungsu();
+		send_object["tick_size"] = sym->TickSize();
+		send_object["tick_value"] = sym->TickValue();
+		send_object["atm"] = sym->Atm();
+		send_object["near_month"] = sym->NearMonth();
+		send_object["last_date"] = sym->LastDate();
 
-	std::string content = send_object.dump(4);
-	SmGlobal* global = SmGlobal::GetInstance();
-	std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
-	sessMgr->send(session_id, content);
+		std::string content = send_object.dump(4);
+		SmGlobal* global = SmGlobal::GetInstance();
+		std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
+		sessMgr->send(session_id, content);
+
+		send_count++;
+
+		LOG_F(INFO, _T(" symbol = %s, count : %d"), sym->SymbolCode().c_str(), send_count);
+	}
+	catch (std::exception e) {
+		std::string error = e.what();
+	}
 }
 
 std::shared_ptr<SmMarket> SmMarketManager::FindMarket(std::string mrkt_name)

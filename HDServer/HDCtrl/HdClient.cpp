@@ -26,6 +26,8 @@
 #include "../MainFrm.h"
 #include "../Market/SmMarketManager.h"
 #include "../Market/SmProduct.h"
+#include "../Market/SmMarket.h"
+#include "../Symbol/HdProductInfo.h"
 
 HdClient::HdClient()
 {
@@ -525,11 +527,6 @@ void HdClient::OnDmSymbolMaster(CString& sTrCode, LONG& nRqID)
 		OnTaskComplete(nRqID);
 		return;
 	}
-	// 	if (sym->RecentMonth())
-	// 	{
-	// 		VtRealtimeRegisterManager* realTimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
-	// 		realTimeRegiMgr->RegisterProduct(sym->ShortCode);
-	// 	}
 
 	CString	strData001 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
 	CString	strData002 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "한글종목명");
@@ -543,23 +540,25 @@ void HdClient::OnDmSymbolMaster(CString& sTrCode, LONG& nRqID)
 	TRACE(strData001);
 	TRACE(_T("\n"));
 	std::string code = sym->SymbolCode().substr(0, 3);
-// 	HdProductInfo* prdtInfo = symMgr->FindProductInfo(code);
-// 	if (prdtInfo) {
-// 		sym->Decimal = prdtInfo->decimal;
-// 		sym->Seungsu = prdtInfo->tradeWin;
-// 		sym->intTickSize = prdtInfo->intTickSize;
-// 		sym->TickValue = prdtInfo->tickValue;
-// 		sym->TickSize = _ttof(prdtInfo->tickSize.c_str());
-// 	}
 	strCom.TrimRight();
 	strUpRate.TrimRight();
 
 
-// 	sym->FullCode = (LPCTSTR)strData001.TrimRight();
-// 	sym->Name = (LPCTSTR)strData002.TrimRight();
-// 	sym->ShortName = (LPCTSTR)strData003.TrimRight();
-// 	sym->EngName = (LPCTSTR)strData004.TrimRight();
-// 	sym->BriefName = (LPCTSTR)strData005.TrimRight();
+	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
+	std::string market_name;
+	market_name = "국내선물";
+	sym->Name((LPCTSTR)strData002);
+	sym->NameEn((LPCTSTR)strData004);
+	sym->CategoryCode(code);
+	sym->MarketName(market_name);
+
+	std::shared_ptr<HdProductInfo> prdtInfo = symMgr->FindProductInfo(code);
+	if (prdtInfo) {
+		sym->Decimal(prdtInfo->decimal);
+		sym->Seungsu(prdtInfo->tradeWin);
+		sym->TickValue(prdtInfo->tickValue);
+		sym->TickSize(_ttof(prdtInfo->tickSize.c_str()));
+	}
 
 
 

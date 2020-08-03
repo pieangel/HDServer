@@ -40,7 +40,7 @@
 #include "Position/SmTotalPositionManager.h"
 #include "Global/SmGlobal.h"
 #include "Service/SmTimeSeriesServiceManager.h"
-
+#include "Log/SmLogManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -177,10 +177,18 @@ void CMainFrame::ClearAllResources()
 	SmTotalPositionManager::DestroyInstance();
 	SmGlobal::DestroyInstance();
 	SmTimeSeriesServiceManager::DestroyInstance();
+	SmLogManager::DestroyInstance();
 }
 
 void CMainFrame::StartProcess()
 {
+	// 로그 매니저를 작동 시킨다.
+	SmLogManager* logMgr = SmLogManager::GetInstance();
+	// 로그 매니저 초기화를 진행한다.
+	logMgr->InitLog();
+	// 국내선물 제품 상태를 읽어 온다.
+	SmSymbolManager::GetInstance()->LoadProductInfo();
+
 	// 해외 종목 정보를 읽어 온다.
 	SmSymbolReader* symbol_reader = SmSymbolReader::GetInstance();
 	symbol_reader->ReadMarketFile();
@@ -240,17 +248,17 @@ void CMainFrame::ReadConfig()
 {
 	SmMongoDBManager* mongoMgr = SmMongoDBManager::GetInstance();
 	// 시장목록 로드
-	mongoMgr->LoadMarketList();
+	//mongoMgr->LoadMarketList();
 	// 심볼 목록 로드
-	mongoMgr->LoadSymbolList();
+	//mongoMgr->LoadSymbolList();
 	// 계좌 목록 로드
 	mongoMgr->LoadAccountList();
 	// 포지션 목록 로드
 	mongoMgr->LoadPositionList();
 	// 시세 로드
-	mongoMgr->LoadRecentQuoteList();
+	//mongoMgr->LoadRecentQuoteList();
 	// 호가 로드
-	mongoMgr->LoadRecentHogaList();
+	//mongoMgr->LoadRecentHogaList();
 	// 접수확인 목록 로드
 	mongoMgr->LoadAcceptedOrderList();
 	// 체결확인 목록 로드
