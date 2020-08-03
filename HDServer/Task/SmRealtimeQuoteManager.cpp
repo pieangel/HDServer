@@ -10,6 +10,7 @@
 #include "../Chart/SmChartDataManager.h"
 #include "../Log/loguru.hpp"
 #include "../Server/SmSessionManager.h"
+#include "../Global/SmGlobal.h"
 
 SmRealtimeQuoteManager::SmRealtimeQuoteManager()
 {
@@ -239,7 +240,10 @@ bool SmRealtimeQuoteManager::ExecuteTask(std::array<SmQuoteData, QuoteArraySize>
 
 		// 관련된 윈도우에 메시지를 보낸다.
 		SmCallbackManager::GetInstance()->OnWndQuoteEvent(sym.get());
-		//SmSessionManager::GetInstance()->SendReqUpdateQuote(sym);
+		std::string content = sym->GetQuoteByJson();
+		SmGlobal* global = SmGlobal::GetInstance();
+		std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
+		sessMgr->send(content);
 	}
 
 	}

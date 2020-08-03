@@ -39,6 +39,7 @@ std::string SmSymbol::GetQuoteByJson()
 	quote["low"] = Quote.Low;
 	quote["open"] = Quote.Open;
 	quote["close"] = Quote.Close;
+	quote["acc_volume"] = Quote.accVolume;
 	quote["sign_to_preday"] = Quote.SignToPreDay;
 	quote["gap_from_preday"] = Quote.GapFromPreDay;
 	quote["ratio_to_preday"] = Quote.RatioToPreday;
