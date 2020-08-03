@@ -10,6 +10,8 @@ public:
 	std::shared_ptr<SmSessionManager> GetSessionManager() {
 		return session_mgr_;
 	}
+
+	static std::string LoginUserID;
 private:
 	std::shared_ptr<SmSessionManager> session_mgr_;
 };

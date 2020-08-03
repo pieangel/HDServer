@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SmMarket.h"
-#include "SmCategory.h"
+#include "SmProduct.h"
 
 SmMarket::SmMarket()
 {
@@ -9,23 +9,23 @@ SmMarket::SmMarket()
 
 SmMarket::~SmMarket()
 {
-	for (auto it = _CategoryList.begin(); it != _CategoryList.end(); ++it) {
-		delete* it;
-	}
+// 	for (auto it = _CategoryList.begin(); it != _CategoryList.end(); ++it) {
+// 		delete* it;
+// 	}
 }
 
-SmCategory* SmMarket::AddCategory(std::string code)
+std::shared_ptr<SmProduct> SmMarket::AddProduct(std::string code)
 {
-	SmCategory* cat = new SmCategory();
+	std::shared_ptr<SmProduct> cat = std::make_shared<SmProduct>();
 	cat->Code(code);
 	_CategoryList.push_back(cat);
 	return cat;
 }
 
-SmCategory* SmMarket::FindCategory(std::string code)
+std::shared_ptr<SmProduct> SmMarket::FindProduct(std::string code)
 {
 	for (auto it = _CategoryList.begin(); it != _CategoryList.end(); ++it) {
-		SmCategory* cat = *it;
+		std::shared_ptr<SmProduct> cat = *it;
 		if (cat->Code().compare(code) == 0) {
 			return cat;
 		}

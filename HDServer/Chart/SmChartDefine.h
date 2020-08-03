@@ -151,6 +151,13 @@ struct SmChartDataItem {
 	std::string date;
 	std::string time;
 	std::string date_time;
+	// 시간이 되었을 때 그 시간에 데이터가 없을 때는 
+	// 이전봉의 종가가 현재 봉의 시고저종이 된다.
+	// 이 값은 임시값으로 차트에 표시되며 
+	// 실제 값이 왔을 때는 실제값으로 수정되어야 한다.
+	// 이 플래그가 true 이면 임시로 만들어진 값으로 반드시 시가를 비롯한 모든 값이 수정되어야 한다.
+	bool temp = false;
+
 	int o = 0;
 	int h = 0;
 	int l = 0;

@@ -14,6 +14,10 @@ public:
 	std::map<std::string, std::shared_ptr<SmSymbol>>& GetSymbolMap() {
 		return _SymbolMap;
 	}
+
+	int KospiCurrent;
+	int Kospi200Current;
+	int Kosdaq150Current;
 	
 private:
 	std::map<std::string, std::shared_ptr<SmSymbol>> _SymbolMap;

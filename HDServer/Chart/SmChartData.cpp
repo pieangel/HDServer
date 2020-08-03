@@ -165,6 +165,20 @@ std::vector<double> SmChartData::GetVolume()
 	return data_list;
 }
 
+void SmChartData::AddChartData(SmChartDataItem&& data)
+{
+	std::string date_time;
+	date_time.append(data.date);
+	date_time.append(data.time);
+	_DataMap[date_time] = data;
+
+	// 일정한 갯수가 넘어가면 이전 데이터는 제거해 준다.
+	if (_DataMap.size() > 3) {
+		auto it = _DataMap.begin();
+		_DataMap.erase(it);
+	}
+}
+
 void SmChartData::AddData(SmChartDataItem& data_item)
 {
 	
@@ -323,6 +337,35 @@ void SmChartData::UpdateChartData(SmChartDataItem data)
 	
 }
 
+void SmChartData::UpdateChartData(SmQuoteData tick_data)
+{
+	std::string time = tick_data.time.substr(0, 4);
+	int close = std::stoi(tick_data.close);
+	auto it = _DataMap.find(time);
+	if (it == _DataMap.end()) {
+		return;
+	}
+
+	SmChartDataItem& item = it->second;
+	if (item.o == 0) {
+		item.o = close;
+	}
+	item.c = close;
+	if (item.h == 0)
+		item.h = close;
+	else {
+		if (close > item.h)
+			item.h = close;
+	}
+
+	if (item.l == 0)
+		item.l = close;
+	else {
+		if (close < item.l)
+			item.l = close;
+	}
+}
+
 void SmChartData::RemoveUser(std::string user_id)
 {
 	auto it = _UserList.find(user_id);
@@ -334,4 +377,13 @@ void SmChartData::RemoveUser(std::string user_id)
 void SmChartData::OnTimer()
 {
 	GetCyclicDataFromServer();
+}
+
+SmChartDataItem* SmChartData::GetChartDataItem(std::string date_time)
+{
+	auto it = _DataMap.find(date_time);
+	if (it != _DataMap.end())
+		return &it->second;
+
+	return nullptr;
 }

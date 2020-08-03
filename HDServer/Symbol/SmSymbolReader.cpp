@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "afxwin.h"
 #include "SmSymbolReader.h"
 #include <filesystem>
 #include <sstream>
@@ -7,7 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include "../Market/SmMarket.h"
 #include "../Market/SmMarketManager.h"
-#include "../Market/SmCategory.h"
+#include "../Market/SmProduct.h"
 #include "SmSymbol.h"
 #include "../Service/SmTimeSeriesServiceManager.h"
 #include "SmSymbolManager.h"
@@ -98,8 +99,8 @@ void SmSymbolReader::ReadMarketFile(std::string fullPath)
 		boost::trim_right(enName);
 		boost::trim_right(name);
 		
-		SmMarket* market = marketMgr->AddMarket(market_type);
-		SmCategory* cat = market->AddCategory(pmCode);
+		std::shared_ptr<SmMarket> market = marketMgr->AddMarket(market_type);
+		std::shared_ptr<SmProduct> cat = market->AddProduct(pmCode);
 		cat->MarketName(market_type);
 		cat->Exchange(exchange);
 		cat->Name(enName);
@@ -134,7 +135,7 @@ void SmSymbolReader::ReadPmFile()
 		boost::trim_right(exChangeCode);
 		boost::trim_right(pmCode);
 		boost::trim_right(pmGubun);
-		SmCategory* cat = marketMgr->FindCategory(market, pmCode);
+		std::shared_ptr<SmProduct> cat = marketMgr->FindProduct(market, pmCode);
 		if (cat) {
 			cat->ExchangeCode(exChangeCode);
 			cat->ExchangeIndex(exIndexCode);
@@ -167,7 +168,7 @@ void SmSymbolReader::ReadPmFile(std::string fullPath)
 		boost::trim_right(exChangeCode);
 		boost::trim_right(pmCode);
 		boost::trim_right(pmGubun);
-		SmCategory* cat = marketMgr->FindCategory(market, pmCode);
+		std::shared_ptr<SmProduct> cat = marketMgr->FindProduct(market, pmCode);
 		if (cat) {
 			cat->ExchangeCode(exChangeCode);
 			cat->ExchangeIndex(exIndexCode);
@@ -440,7 +441,7 @@ void SmSymbolReader::ReadJmFile(std::string fullPath)
 		TRACE(msg);
 
 		SmSymbolManager* symMgr = SmSymbolManager::GetInstance();
-		SmCategory* cat = marketMgr->FindCategory(MrktCd);
+		std::shared_ptr<SmProduct> cat = marketMgr->FindProduct(MrktCd);
 		if (cat) {
 			std::shared_ptr<SmSymbol> sym = cat->AddSymbol(Series);
 			sym->Index(std::stoi(IndexCode));

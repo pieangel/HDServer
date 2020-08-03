@@ -10,7 +10,7 @@
 #include <memory>
 #include "../Market/SmMarketManager.h"
 #include "../Market/SmMarket.h"	
-#include "../Market/SmCategory.h"
+#include "../Market/SmProduct.h"
 #include "../Chart/SmChartData.h"
 #include "../Chart/SmChartDataManager.h"
 #include "../Chart/SmChartDefine.h"
@@ -394,50 +394,50 @@ void SmCorrelationManager::GetSymbolList()
 	std::vector<std::shared_ptr<SmSymbol>> col_symbol_list;
 	std::vector<std::shared_ptr<SmSymbol>> row_symbol_list;
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-	SmMarket* market = marketMgr->FindMarket("지수");
-	SmCategory* product = market->FindCategory("YM");
+	std::shared_ptr<SmMarket> market = marketMgr->FindMarket("지수");
+	std::shared_ptr<SmProduct> product = market->FindProduct("YM");
 	col_symbol_list.push_back(product->GetRecentMonthSymbol());
 
 	market = marketMgr->FindMarket("지수");
-	product = market->FindCategory("SP");
+	product = market->FindProduct("SP");
 	row_symbol_list.push_back(product->GetRecentMonthSymbol());
 
 	market = marketMgr->FindMarket("통화");
-	product = market->FindCategory("RP");
+	product = market->FindProduct("RP");
 	col_symbol_list.push_back(product->GetRecentMonthSymbol());
 
 	market = marketMgr->FindMarket("통화");
-	product = market->FindCategory("6A");
+	product = market->FindProduct("6A");
 	row_symbol_list.push_back(product->GetRecentMonthSymbol());
 
 	market = marketMgr->FindMarket("금리");
-	product = market->FindCategory("ZN");
+	product = market->FindProduct("ZN");
 	col_symbol_list.push_back(product->GetRecentMonthSymbol());
 
 	market = marketMgr->FindMarket("금리");
-	product = market->FindCategory("ZF");
+	product = market->FindProduct("ZF");
 	row_symbol_list.push_back(product->GetRecentMonthSymbol());
 
 	market = marketMgr->FindMarket("에너지");
-	product = market->FindCategory("CL");
+	product = market->FindProduct("CL");
 	col_symbol_list.push_back(product->GetRecentMonthSymbol());
 	market = marketMgr->FindMarket("에너지");
-	product = market->FindCategory("NG");
+	product = market->FindProduct("NG");
 	row_symbol_list.push_back(product->GetRecentMonthSymbol());
 
 	market = marketMgr->FindMarket("금속");
-	product = market->FindCategory("SI");
+	product = market->FindProduct("SI");
 	col_symbol_list.push_back(product->GetRecentMonthSymbol());
 
 	market = marketMgr->FindMarket("금속");
-	product = market->FindCategory("GC");
+	product = market->FindProduct("GC");
 	row_symbol_list.push_back(product->GetRecentMonthSymbol());
 
 	market = marketMgr->FindMarket("농산물");
-	product = market->FindCategory("ZC");
+	product = market->FindProduct("ZC");
 	col_symbol_list.push_back(product->GetRecentMonthSymbol());
 	market = marketMgr->FindMarket("농산물");
-	product = market->FindCategory("ZW");
+	product = market->FindProduct("ZW");
 	row_symbol_list.push_back(product->GetRecentMonthSymbol());
 
 	size_t min_size = 300;

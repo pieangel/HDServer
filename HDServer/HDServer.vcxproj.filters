@@ -220,9 +220,6 @@
     <ClInclude Include="Log\SmLogManager.h">
       <Filter>Log</Filter>
     </ClInclude>
-    <ClInclude Include="Market\SmCategory.h">
-      <Filter>Market</Filter>
-    </ClInclude>
     <ClInclude Include="Market\SmMarket.h">
       <Filter>Market</Filter>
     </ClInclude>
@@ -439,6 +436,60 @@
     <ClInclude Include="Util\SmStringConverter.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="Task\HdTaskArg.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\HdTaskEventArg.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\SmCallbackManager.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\SmRealtimeHogaManager.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\SmRealtimeQuoteManager.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\ViServerDataReceiver.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\VtProgressDlg.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Global\EbGlobal.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Market\SmProduct.h">
+      <Filter>Market</Filter>
+    </ClInclude>
+    <ClInclude Include="HDCtrl\HdClient.h">
+      <Filter>HdClient</Filter>
+    </ClInclude>
+    <ClInclude Include="HDCtrl\HdCtrl.h">
+      <Filter>HdClient</Filter>
+    </ClInclude>
+    <ClInclude Include="HDCtrl\HDDefine.h">
+      <Filter>HdClient</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\GradientStatic.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\XColorStatic.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\cryptor.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\FontSize.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\HdProductInfo.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\SmRunInfo.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -533,9 +584,6 @@
     </ClCompile>
     <ClCompile Include="Log\SmLogManager.cpp">
       <Filter>Log</Filter>
-    </ClCompile>
-    <ClCompile Include="Market\SmCategory.cpp">
-      <Filter>Market</Filter>
     </ClCompile>
     <ClCompile Include="Market\SmMarket.cpp">
       <Filter>Market</Filter>
@@ -658,6 +706,42 @@
       <Filter>Order</Filter>
     </ClCompile>
     <ClCompile Include="Util\SmStringConverter.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\HdTaskArg.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\SmCallbackManager.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\SmRealtimeHogaManager.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\SmRealtimeQuoteManager.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\ViServerDataReceiver.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\VtProgressDlg.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Market\SmProduct.cpp">
+      <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="HDCtrl\HdClient.cpp">
+      <Filter>HdClient</Filter>
+    </ClCompile>
+    <ClCompile Include="HDCtrl\HdCtrl.cpp">
+      <Filter>HdClient</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\GradientStatic.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\XColorStatic.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\FontSize.cpp">
       <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>

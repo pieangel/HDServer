@@ -1,19 +1,19 @@
 #include "pch.h"
-#include "SmCategory.h"
+#include "SmProduct.h"
 #include "../Symbol/SmSymbol.h"
 #include "../Symbol/SmSymbolManager.h"
 #include "SmProductYearMonth.h"
-SmCategory::SmCategory()
+SmProduct::SmProduct()
 {
 }
 
 
-SmCategory::~SmCategory()
+SmProduct::~SmProduct()
 {
 	
 }
 
-std::shared_ptr<SmSymbol> SmCategory::AddSymbol(std::string symCode)
+std::shared_ptr<SmSymbol> SmProduct::AddSymbol(std::string symCode)
 {
 	SmSymbolManager* symMgr = SmSymbolManager::GetInstance();
 	std::shared_ptr<SmSymbol> sym = std::make_shared<SmSymbol>();
@@ -24,14 +24,21 @@ std::shared_ptr<SmSymbol> SmCategory::AddSymbol(std::string symCode)
 	return sym;
 }
 
-std::shared_ptr<SmSymbol> SmCategory::GetRecentMonthSymbol()
+std::shared_ptr<SmSymbol> SmProduct::GetRecentMonthSymbol()
 {
 	if (_SymbolList.size() == 0)
 		return nullptr;
 	return _SymbolList[0];
 }
 
-std::shared_ptr<SmProductYearMonth> SmCategory::GetRecentYearMonth()
+std::shared_ptr<SmSymbol> SmProduct::GetNextMonthSymbol()
+{
+	if (_SymbolList.size() < 2)
+		return nullptr;
+	return _SymbolList[1];
+}
+
+std::shared_ptr<SmProductYearMonth> SmProduct::GetRecentYearMonth()
 {
 	if (_YearMonthMap.size() == 0)
 		return nullptr;
@@ -39,7 +46,7 @@ std::shared_ptr<SmProductYearMonth> SmCategory::GetRecentYearMonth()
 		return _YearMonthMap.begin()->second;
 }
 
-std::shared_ptr<SmProductYearMonth> SmCategory::GetNextYearMonth()
+std::shared_ptr<SmProductYearMonth> SmProduct::GetNextYearMonth()
 {
 	if (_YearMonthMap.size() <= 1)
 		return nullptr;
@@ -47,7 +54,7 @@ std::shared_ptr<SmProductYearMonth> SmCategory::GetNextYearMonth()
 		return (++_YearMonthMap.begin())->second;
 }
 
-void SmCategory::AddToYearMonth(std::string symbol_code, std::shared_ptr<SmSymbol> symbol)
+void SmProduct::AddToYearMonth(std::string symbol_code, std::shared_ptr<SmSymbol> symbol)
 {
 	if (!symbol)
 		return;

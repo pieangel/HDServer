@@ -17,5 +17,6 @@ public:
 	static std::string GetUTCDateTimeStringForPreMin(int previousMinLen);
 	static double GetDifTimeBySeconds(std::string newTime, std::string oldTime);
 	static double GetDifTimeForNow(std::string srcTime);
+	static std::string Format(const char* fmt, ...);
 };
 

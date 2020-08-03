@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
-class SmCategory;
+#include <memory>
+class SmProduct;
 class SmMarket
 {
 public:
@@ -14,9 +15,9 @@ public:
 	/// </summary>
 	/// <param name="code"></param>
 	/// <returns></returns>
-	SmCategory* AddCategory(std::string code);
-	SmCategory* FindCategory(std::string code);
-	std::vector<SmCategory*>& GetCategoryList() {
+	std::shared_ptr<SmProduct> AddProduct(std::string code);
+	std::shared_ptr<SmProduct> FindProduct(std::string code);
+	std::vector<std::shared_ptr<SmProduct>>& GetCategoryList() {
 		return _CategoryList;
 	}
 	int Index() const { return _Index; }
@@ -24,6 +25,6 @@ public:
 private:
 	std::string _Name;
 	int _Index;
-	std::vector<SmCategory*> _CategoryList;
+	std::vector<std::shared_ptr<SmProduct>> _CategoryList;
 };
 

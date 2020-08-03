@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "SmChartDefine.h"
+#include "../Symbol/SmQuoteDefine.h"
 #include <vector>
 #include <set>
 #include <list>
@@ -17,7 +18,7 @@ private:
 	// 최신데이터가 맨 앞에 온다. 
 	// 따라서 인덱스 0이 가장 최신 데이터이다.
 	std::list<SmChartDataItem> _DataItemList;
-	std::multimap<std::string, SmChartDataItem> _DataMap;
+	std::map<std::string, SmChartDataItem> _DataMap;
 	// 차트를 요청하는 사용자 아이디 목록
 	std::set<std::string> _UserList;
 	void GetChartDataFromDB();
@@ -33,15 +34,20 @@ public:
 	std::vector<double> GetHigh();
 	std::vector<double> GetLow();
 	std::vector<double> GetVolume();
-	std::multimap<std::string, SmChartDataItem>& GetDataMap() {
+	std::map<std::string, SmChartDataItem>& GetDataMap() {
 		return _DataMap;
 	}
+	void AddChartData(SmChartDataItem&& data);
 	void AddData(SmChartDataItem& data_item);
-	std::list<SmChartDataItem>& GetDataItemList() {
-		return _DataItemList;
-	}
-	size_t GetChartDataCount() {
-		return _DataItemList.size();
+// 	std::list<SmChartDataItem>& GetDataItemList() {
+// 		return _DataItemList;
+// 	}
+// 	size_t GetChartDataCount() {
+// 		return _DataItemList.size();
+// 	}
+
+	std::map<std::string, SmChartDataItem>& GetDataItemList() {
+		return _DataMap;
 	}
 
 	size_t GetDataCount() {
@@ -54,6 +60,8 @@ public:
 	void PushChartDataItemToBack(SmChartDataItem data);
 	void PushChartDataItemToFront(SmChartDataItem data);
 	void UpdateChartData(SmChartDataItem data);
+	// 실시간 틱 데이터로 차트데이터를 업데이트 한다.
+	void UpdateChartData(SmQuoteData tick_data);
 	size_t GetUserCount() {
 		return _UserList.size();
 	}
@@ -96,5 +104,7 @@ public:
 	void CycleDataSize(size_t val) { _CycleDataSize = val; }
 	bool Received() const { return _Received; }
 	void Received(bool val) { _Received = val; }
+
+	SmChartDataItem* GetChartDataItem(std::string date_time);
 };
 

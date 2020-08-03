@@ -102,11 +102,11 @@ void SmTimeSeriesServiceManager::SendChartData(SmChartDataRequest data_req, std:
 	int start_index = 0;
 	int end_index = 0;
 	std::vector<SmSimpleChartDataItem> dataVec;
-	std::list<SmChartDataItem>& data = chart_data->GetDataItemList();
+	std::map<std::string, SmChartDataItem>& data = chart_data->GetDataItemList();
 	int i = 0;
 	for (auto it = data.begin(); it != data.end(); ++it) {
 		end_index = i;
-		SmChartDataItem srcItem = *it;
+		SmChartDataItem srcItem = it->second;
 		std::string date_time = srcItem.date + srcItem.time;
 		std::string local_date_time = VtStringUtil::GetLocalTimeByDatetimeString(date_time);
 		SmSimpleChartDataItem item;
@@ -199,7 +199,7 @@ void SmTimeSeriesServiceManager::SendChartData(int session_id, std::shared_ptr<S
 {
 	if (!chart_data)
 		return;
-	std::multimap<std::string, SmChartDataItem>& dataMap = chart_data->GetDataMap();
+	std::map<std::string, SmChartDataItem>& dataMap = chart_data->GetDataMap();
 	int total_count = (int)dataMap.size();
 	int current_count = 1;
 	for (auto element : dataMap) {

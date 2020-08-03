@@ -211,6 +211,7 @@
     <ClInclude Include="Format\ranges.h" />
     <ClInclude Include="Format\time.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Global\EbGlobal.h" />
     <ClInclude Include="Global\SmGlobal.h" />
     <ClInclude Include="Global\TemplateSingleton.h" />
     <ClInclude Include="Grid\CellRange.h" />
@@ -221,6 +222,9 @@
     <ClInclude Include="Grid\InPlaceEdit.h" />
     <ClInclude Include="Grid\MemDC.h" />
     <ClInclude Include="Grid\TitleTip.h" />
+    <ClInclude Include="HDCtrl\HdClient.h" />
+    <ClInclude Include="HDCtrl\HdCtrl.h" />
+    <ClInclude Include="HDCtrl\HDDefine.h" />
     <ClInclude Include="HDCtrl\hdfcommagent.h" />
     <ClInclude Include="HDCtrl\SmHdClient.h" />
     <ClInclude Include="HDCtrl\SmHdCtrl.h" />
@@ -231,7 +235,7 @@
     <ClInclude Include="Log\loguru.hpp" />
     <ClInclude Include="Log\SmLogManager.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="Market\SmCategory.h" />
+    <ClInclude Include="Market\SmProduct.h" />
     <ClInclude Include="Market\SmMarket.h" />
     <ClInclude Include="Market\SmMarketManager.h" />
     <ClInclude Include="Market\SmProductYearMonth.h" />
@@ -279,14 +283,23 @@
     <ClInclude Include="Sklearn\noob_pandas.h" />
     <ClInclude Include="Sklearn\preprocessing.h" />
     <ClInclude Include="Sklearn\statx.h" />
+    <ClInclude Include="Symbol\HdProductInfo.h" />
     <ClInclude Include="Symbol\SmHogaDefine.h" />
     <ClInclude Include="Symbol\SmQuoteDefine.h" />
     <ClInclude Include="Symbol\SmRealtimeRegisterManager.h" />
+    <ClInclude Include="Symbol\SmRunInfo.h" />
     <ClInclude Include="Symbol\SmSymbol.h" />
     <ClInclude Include="Symbol\SmSymbolManager.h" />
     <ClInclude Include="Symbol\SmSymbolReader.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Task\BlockingCollection.h" />
+    <ClInclude Include="Task\HdTaskArg.h" />
+    <ClInclude Include="Task\HdTaskEventArg.h" />
+    <ClInclude Include="Task\SmCallbackManager.h" />
+    <ClInclude Include="Task\SmRealtimeHogaManager.h" />
+    <ClInclude Include="Task\SmRealtimeQuoteManager.h" />
+    <ClInclude Include="Task\ViServerDataReceiver.h" />
+    <ClInclude Include="Task\VtProgressDlg.h" />
     <ClInclude Include="Timer\cpptime.h" />
     <ClInclude Include="Time\chrono_io.h" />
     <ClInclude Include="Time\date.h" />
@@ -299,11 +312,15 @@
     <ClInclude Include="Time\tz_private.h" />
     <ClInclude Include="User\SmUser.h" />
     <ClInclude Include="User\SmUserManager.h" />
+    <ClInclude Include="Util\cryptor.hpp" />
+    <ClInclude Include="Util\FontSize.h" />
+    <ClInclude Include="Util\GradientStatic.h" />
     <ClInclude Include="Util\SmStringConverter.h" />
     <ClInclude Include="Util\SmUtfUtil.h" />
     <ClInclude Include="Util\SmUtil.h" />
     <ClInclude Include="Util\UtfConverter.h" />
     <ClInclude Include="Util\VtStringUtil.h" />
+    <ClInclude Include="Util\XColorStatic.h" />
     <ClInclude Include="Xml\pugiconfig.hpp" />
     <ClInclude Include="Xml\pugixml.hpp" />
     <ClInclude Include="Xml\tinyxml2.h" />
@@ -339,6 +356,8 @@
     <ClCompile Include="Grid\GridDropTarget.cpp" />
     <ClCompile Include="Grid\InPlaceEdit.cpp" />
     <ClCompile Include="Grid\TitleTip.cpp" />
+    <ClCompile Include="HDCtrl\HdClient.cpp" />
+    <ClCompile Include="HDCtrl\HdCtrl.cpp" />
     <ClCompile Include="HDCtrl\hdfcommagent.cpp" />
     <ClCompile Include="HDCtrl\SmHdClient.cpp" />
     <ClCompile Include="HDCtrl\SmHdCtrl.cpp" />
@@ -351,7 +370,7 @@
     </ClCompile>
     <ClCompile Include="Log\SmLogManager.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="Market\SmCategory.cpp" />
+    <ClCompile Include="Market\SmProduct.cpp" />
     <ClCompile Include="Market\SmMarket.cpp" />
     <ClCompile Include="Market\SmMarketManager.cpp" />
     <ClCompile Include="Market\SmProductYearMonth.cpp" />
@@ -446,6 +465,12 @@
     <ClCompile Include="Symbol\SmSymbol.cpp" />
     <ClCompile Include="Symbol\SmSymbolManager.cpp" />
     <ClCompile Include="Symbol\SmSymbolReader.cpp" />
+    <ClCompile Include="Task\HdTaskArg.cpp" />
+    <ClCompile Include="Task\SmCallbackManager.cpp" />
+    <ClCompile Include="Task\SmRealtimeHogaManager.cpp" />
+    <ClCompile Include="Task\SmRealtimeQuoteManager.cpp" />
+    <ClCompile Include="Task\ViServerDataReceiver.cpp" />
+    <ClCompile Include="Task\VtProgressDlg.cpp" />
     <ClCompile Include="Time\tz.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -455,6 +480,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Util\FontSize.cpp" />
+    <ClCompile Include="Util\GradientStatic.cpp" />
     <ClCompile Include="Util\SmStringConverter.cpp" />
     <ClCompile Include="Util\SmUtfUtil.cpp" />
     <ClCompile Include="Util\SmUtil.cpp">
@@ -466,6 +493,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Util\VtStringUtil.cpp" />
+    <ClCompile Include="Util\XColorStatic.cpp" />
     <ClCompile Include="Xml\pugixml.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>

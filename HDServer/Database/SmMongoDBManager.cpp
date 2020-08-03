@@ -19,7 +19,7 @@
 #include "../Config/SmConfigManager.h"
 #include "../Util/SmUtfUtil.h"
 #include "../Market/SmMarket.h"
-#include "../Market/SmCategory.h"
+#include "../Market/SmProduct.h"
 #include "../Symbol/SmSymbol.h"
 #include <codecvt>
 #include <locale>
@@ -248,7 +248,7 @@ void SmMongoDBManager::LoadMarketList()
 			std::string market_name = json_object["market_name"];
 			market_name = SmUtfUtil::Utf8ToAnsi(market_name);
 
-			SmMarket* newMarket = marketMgr->AddMarket(market_name);
+			std::shared_ptr<SmMarket> newMarket = marketMgr->AddMarket(market_name);
 			int market_index = json_object["market_index"];
 			newMarket->Name(market_name);
 			newMarket->Index(market_index);
@@ -276,7 +276,7 @@ void SmMongoDBManager::LoadMarketList()
 					}
 				}
 				
-				SmCategory* category = newMarket->AddCategory(product_code);
+				std::shared_ptr<SmProduct> category = newMarket->AddProduct(product_code);
 				category->Code(product_code);
 				category->Name(product_name_en);
 				category->NameKr(product_name_kr);
@@ -312,7 +312,7 @@ void SmMongoDBManager::LoadSymbolList()
 			std::string market_name = json_object["market_name"];
 			market_name = SmUtfUtil::Utf8ToAnsi(market_name);
 			std::string product_code = json_object["product_code"];
-			SmCategory* foundCategory = marketMgr->FindCategory(market_name, product_code);
+			std::shared_ptr<SmProduct> foundCategory = marketMgr->FindProduct(market_name, product_code);
 			if (!foundCategory)
 				continue;
 
@@ -3058,16 +3058,16 @@ void SmMongoDBManager::SaveMarketsToDatabase()
 		builder::stream::document builder{};
 
 		SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-		std::vector<SmMarket*>& marketList = marketMgr->GetMarketList();
+		std::vector<std::shared_ptr<SmMarket>>& marketList = marketMgr->GetMarketList();
 		for (size_t i = 0; i < marketList.size(); ++i) {
-			SmMarket* market = marketList[i];
+			std::shared_ptr<SmMarket> market = marketList[i];
 			bsoncxx::stdx::optional<bsoncxx::document::value> found_market =
 				coll.find_one(bsoncxx::builder::stream::document{} << "market_name" << SmUtfUtil::AnsiToUtf8((char*)market->Name().c_str()) << finalize);
 			if (!found_market) {
 				auto in_array = builder << "product_list" << builder::stream::open_array;
-				std::vector<SmCategory*>& catVec = market->GetCategoryList();
+				std::vector<std::shared_ptr<SmProduct>>& catVec = market->GetCategoryList();
 				for (size_t j = 0; j < catVec.size(); ++j) {
-					SmCategory* cat = catVec[j];
+					std::shared_ptr<SmProduct> cat = catVec[j];
 					bsoncxx::stdx::optional<bsoncxx::document::value> found_product =
 						coll.find_one(bsoncxx::builder::stream::document{} << "prodcut_list.product_code" << cat->Code() << finalize);
 					if (!found_product) {
@@ -3114,13 +3114,13 @@ void SmMongoDBManager::SaveSymbolsToDatabase()
 		builder::stream::document builder{};
 
 		SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-		std::vector<SmMarket*>& marketList = marketMgr->GetMarketList();
+		std::vector<std::shared_ptr<SmMarket>>& marketList = marketMgr->GetMarketList();
 
 		for (size_t i = 0; i < marketList.size(); ++i) {
-			SmMarket* market = marketList[i];
-			std::vector<SmCategory*>& cat_list = market->GetCategoryList();
+			std::shared_ptr<SmMarket> market = marketList[i];
+			std::vector<std::shared_ptr<SmProduct>>& cat_list = market->GetCategoryList();
 			for (size_t j = 0; j < cat_list.size(); ++j) {
-				SmCategory* cat = cat_list[j];
+				std::shared_ptr<SmProduct> cat = cat_list[j];
 				std::vector<std::shared_ptr<SmSymbol>>& sym_list = cat->GetSymbolList();
 				for (size_t k = 0; k < sym_list.size(); ++k) {
 					std::shared_ptr<SmSymbol> sym = sym_list[k];

@@ -6,7 +6,7 @@
 #include "../Xml/pugixml.hpp"
 #include "../Symbol/SmSymbolReader.h"
 #include "SmMarket.h"
-#include "SmCategory.h"
+#include "SmProduct.h"
 #include "../Util/VtStringUtil.h"
 #include "../Json/json.hpp"
 #include "../Log/loguru.hpp"
@@ -17,10 +17,11 @@
 #include "../User/SmUserManager.h"
 #include "../User/SmUser.h"
 #include "../Symbol/SmSymbol.h"
-#include "SmCategory.h"
+#include "SmProduct.h"
 #include "../Global/SmGlobal.h"
 #include "../Server/SmSessionManager.h"
 #include "../Market/SmProductYearMonth.h"
+#include "../Symbol/SmRunInfo.h"
 
 
 using namespace std::chrono;
@@ -29,14 +30,16 @@ using namespace nlohmann;
 
 SmMarketManager::SmMarketManager()
 {
+	InitDmFutures();
+	InitAbroadProducts();
 }
 
 
 SmMarketManager::~SmMarketManager()
 {
-	for (auto it = _MarketList.begin(); it != _MarketList.end(); ++it) {
-		delete* it;
-	}
+// 	for (auto it = _MarketList.begin(); it != _MarketList.end(); ++it) {
+// 		delete* it;
+// 	}
 }
 
 void SmMarketManager::ReadSymbolsFromFile()
@@ -63,34 +66,34 @@ void SmMarketManager::ReadSymbolsFromFile()
 	}
 }
 
-SmMarket* SmMarketManager::AddMarket(std::string name)
+std::shared_ptr<SmMarket> SmMarketManager::AddMarket(std::string name)
 {
-	SmMarket* found_market = FindMarket(name);
+	std::shared_ptr<SmMarket> found_market = FindMarket(name);
 	if (found_market)
 		return found_market;
 
-	SmMarket* market = new SmMarket();
+	std::shared_ptr<SmMarket> market = std::make_shared<SmMarket>();
 	market->Name(name);
 	_MarketList.emplace_back(market);
 	return market;
 }
 
-SmCategory* SmMarketManager::FindCategory(std::string mrkt_name, std::string cat_code)
+std::shared_ptr<SmProduct> SmMarketManager::FindProduct(std::string mrkt_name, std::string cat_code)
 {
-	SmMarket* cur_market = FindMarket(mrkt_name);
+	std::shared_ptr<SmMarket> cur_market = FindMarket(mrkt_name);
 	if (!cur_market)
 		return nullptr;
-	return cur_market->FindCategory(cat_code);
+	return cur_market->FindProduct(cat_code);
 }
 
-SmCategory* SmMarketManager::FindCategory(std::string cat_code)
+std::shared_ptr<SmProduct> SmMarketManager::FindProduct(std::string cat_code)
 {
 	auto it = _CategoryToMarketMap.find(cat_code);
 	if (it != _CategoryToMarketMap.end()) {
 		std::string market_name = it->second;
-		SmMarket* mrkt = FindMarket(market_name);
+		std::shared_ptr<SmMarket> mrkt = FindMarket(market_name);
 		if (mrkt)
-			return mrkt->FindCategory(cat_code);
+			return mrkt->FindProduct(cat_code);
 		else
 			return nullptr;
 	}
@@ -121,7 +124,7 @@ std::vector<std::shared_ptr<SmSymbol>> SmMarketManager::GetRecentMonthSymbolList
 {
 	std::vector<std::shared_ptr<SmSymbol>> symvec;
 	for (auto it = _MarketList.begin(); it != _MarketList.end(); ++it) {
-		SmMarket* mrkt = *it;
+		std::shared_ptr<SmMarket> mrkt = *it;
 		auto cat_vec = mrkt->GetCategoryList();
 		for (auto itc = cat_vec.begin(); itc != cat_vec.end(); ++itc) {
 			
@@ -148,16 +151,16 @@ std::vector<std::shared_ptr<SmSymbol>> SmMarketManager::GetRecentMonthSymbolList
 void SmMarketManager::SendMarketList(std::string user_id)
 {
 	for (size_t i = 0; i < _MarketList.size(); ++i) {
-		SmMarket* market = _MarketList[i];
+		std::shared_ptr<SmMarket> market = _MarketList[i];
 		json send_object;
 		send_object["res_id"] = SmProtocol::res_market_list;
 		send_object["total_market_count"] = (int)_MarketList.size();
 		send_object["total_category_count"] = GetTotalCategoryCount();
 		send_object["market_index"] = (int)i;
 		send_object["market_name"] = SmUtfUtil::AnsiToUtf8((char*)market->Name().c_str());
-		std::vector<SmCategory*>&  catVec = market->GetCategoryList();
+		std::vector<std::shared_ptr<SmProduct>>&  catVec = market->GetCategoryList();
 		for (size_t j = 0; j < catVec.size(); ++j) {
-			SmCategory* cat = catVec[j];
+			std::shared_ptr<SmProduct> cat = catVec[j];
 			send_object["category"][j] = {
 				{ "code",  cat->Code() },
 				{ "name_kr", SmUtfUtil::AnsiToUtf8((char*)cat->NameKr().c_str()) },
@@ -179,16 +182,16 @@ void SmMarketManager::SendMarketList(std::string user_id)
 void SmMarketManager::SendMarketList(int session_id)
 {
 	for (size_t i = 0; i < _MarketList.size(); ++i) {
-		SmMarket* market = _MarketList[i];
+		std::shared_ptr<SmMarket> market = _MarketList[i];
 		json send_object;
 		send_object["res_id"] = SmProtocol::res_market_list;
 		send_object["total_market_count"] = (int)_MarketList.size();
 		send_object["total_category_count"] = GetTotalCategoryCount();
 		send_object["market_index"] = (int)i;
 		send_object["market_name"] = SmUtfUtil::AnsiToUtf8((char*)market->Name().c_str());
-		std::vector<SmCategory*>& catVec = market->GetCategoryList();
+		std::vector<std::shared_ptr<SmProduct>>& catVec = market->GetCategoryList();
 		for (size_t j = 0; j < catVec.size(); ++j) {
-			SmCategory* cat = catVec[j];
+			std::shared_ptr<SmProduct> cat = catVec[j];
 			send_object["category"][j] = {
 				{ "code",  cat->Code() },
 				{ "name_kr", SmUtfUtil::AnsiToUtf8((char*)cat->NameKr().c_str()) },
@@ -210,10 +213,10 @@ void SmMarketManager::SendMarketList(int session_id)
 void SmMarketManager::SendSymbolListByCategory(std::string user_id)
 {
 	for (size_t i = 0; i < _MarketList.size(); ++i) {
-		SmMarket* market = _MarketList[i];
-		std::vector<SmCategory*>& cat_list = market->GetCategoryList();
+		std::shared_ptr<SmMarket> market = _MarketList[i];
+		std::vector<std::shared_ptr<SmProduct>>& cat_list = market->GetCategoryList();
 		for (size_t j = 0; j < cat_list.size(); ++j) {
-			SmCategory* cat = cat_list[j];
+			std::shared_ptr<SmProduct> cat = cat_list[j];
 			std::vector<std::shared_ptr<SmSymbol>>& sym_list = cat->GetSymbolList();
 			for (size_t k = 0; k < sym_list.size(); ++k) {
 				SendSymbolMaster(user_id, sym_list[k]);
@@ -225,10 +228,10 @@ void SmMarketManager::SendSymbolListByCategory(std::string user_id)
 void SmMarketManager::SendSymbolListByCategory(int session_id)
 {
 	for (size_t i = 0; i < _MarketList.size(); ++i) {
-		SmMarket* market = _MarketList[i];
-		std::vector<SmCategory*>& cat_list = market->GetCategoryList();
+		std::shared_ptr<SmMarket> market = _MarketList[i];
+		std::vector<std::shared_ptr<SmProduct>>& cat_list = market->GetCategoryList();
 		for (size_t j = 0; j < cat_list.size(); ++j) {
-			SmCategory* cat = cat_list[j];
+			std::shared_ptr<SmProduct> cat = cat_list[j];
 			std::vector<std::shared_ptr<SmSymbol>>& sym_list = cat->GetSymbolList();
 			for (size_t k = 0; k < sym_list.size(); ++k) {
 				SendSymbolMaster(session_id, sym_list[k]);
@@ -241,7 +244,7 @@ int SmMarketManager::GetTotalCategoryCount()
 {
 	int total = 0;
 	for (size_t i = 0; i < _MarketList.size(); ++i) {
-		SmMarket* market = _MarketList[i];
+		std::shared_ptr<SmMarket> market = _MarketList[i];
 		total += market->GetCategoryList().size();
 	}
 
@@ -252,14 +255,170 @@ int SmMarketManager::GetTotalSymbolCount()
 {
 	int total = 0;
 	for (size_t i = 0; i < _MarketList.size(); ++i) {
-		SmMarket* market = _MarketList[i];
-		std::vector<SmCategory*>& cat_list = market->GetCategoryList();
+		std::shared_ptr<SmMarket> market = _MarketList[i];
+		std::vector<std::shared_ptr<SmProduct>>& cat_list = market->GetCategoryList();
 		for (size_t j = 0; j < cat_list.size(); ++j) {
 			total += cat_list[j]->GetSymbolList().size();
 		}
 	}
 
 	return total;
+}
+
+
+void SmMarketManager::AddFutureRunInfo(SmRunInfo run_info)
+{
+	_FutureRunVector.push_back(run_info);
+}
+
+void SmMarketManager::AddOptionRunInfo(SmRunInfo run_info)
+{
+	_OptionRunVector.push_back(run_info);
+}
+
+
+void SmMarketManager::LoadRunInfo()
+{
+	SmConfigManager* configMgr = SmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetApplicationPath();
+	appPath.append(_T("\\"));
+	appPath.append(_T("config.xml"));
+
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(appPath.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		// 설정 파일이 없을 때
+// 		std::cout << "Parse error: " << result.description()
+// 			<< ", character pos= " << result.offset;
+		return;
+	}
+
+	pugi::xml_node application = doc.child("application");
+	pugi::xml_node running_list = application.child("runnig_list");
+	if (running_list) {
+		pugi::xml_node future_list = running_list.child("future_list");
+		if (future_list) {
+			for (pugi::xml_node future_node = future_list.first_child(); future_node; future_node = future_node.next_sibling()) {
+				std::string code = future_node.attribute("code").as_string();
+				std::string name = future_node.attribute("name").as_string();
+				std::string custom_name = future_node.attribute("custom_name").as_string();
+				SmRunInfo run_info;
+				run_info.Code = code;
+				run_info.Name = name;
+				run_info.UserDefinedName = custom_name;
+				AddFutureRunInfo(run_info);
+			}
+		}
+
+		pugi::xml_node option_list = running_list.child("option_list");
+		if (option_list) {
+			for (pugi::xml_node option_node = option_list.first_child(); option_node; option_node = option_node.next_sibling()) {
+				std::string call_code = option_node.attribute("call").as_string();
+				std::string put_code = option_node.attribute("put").as_string();
+				std::string name = option_node.attribute("name").as_string();
+				std::string code = option_node.child_value();
+				SmRunInfo run_info;
+				run_info.CallCode = call_code;
+				run_info.PutCode = put_code;
+				run_info.Name = name;
+				run_info.UserDefinedName = name;
+				run_info.Code = code;
+				AddOptionRunInfo(run_info);
+			}
+		}
+	}
+}
+
+std::vector<SmRunInfo> SmMarketManager::GetRunInfoList()
+{
+	std::vector<SmRunInfo> arg_list;
+	for (auto it = _FutureRunVector.begin(); it != _FutureRunVector.end(); ++it) {
+		SmRunInfo& info = *it;
+		arg_list.push_back(info);
+	}
+
+
+	for (auto it = _OptionRunVector.begin(); it != _OptionRunVector.end(); ++it) {
+		SmRunInfo& info = *it;
+		arg_list.push_back(info);
+	}
+
+
+	return arg_list;
+}
+
+void SmMarketManager::InitDmFutures()
+{
+	_MainFutureVector.push_back("101F");
+	_MainFutureVector.push_back("105F");
+	_MainFutureVector.push_back("106F");
+	_MainFutureVector.push_back("167F");
+	_MainFutureVector.push_back("175F");
+}
+
+
+void SmMarketManager::InitAbroadProducts()
+{
+	_AbroadProductSet.insert("6A");
+	_AbroadProductSet.insert("6B");
+	_AbroadProductSet.insert("6E");
+	_AbroadProductSet.insert("6J");
+	_AbroadProductSet.insert("E7");
+	_AbroadProductSet.insert("J7");
+	_AbroadProductSet.insert("M6A");
+	_AbroadProductSet.insert("M6B");
+	_AbroadProductSet.insert("M6E");
+	_AbroadProductSet.insert("ES");
+	_AbroadProductSet.insert("NIY");
+	_AbroadProductSet.insert("NKD");
+	_AbroadProductSet.insert("NQ");
+	_AbroadProductSet.insert("OES");
+	_AbroadProductSet.insert("ONQ");
+	_AbroadProductSet.insert("SP");
+	_AbroadProductSet.insert("GE");
+	_AbroadProductSet.insert("M2K"); // 미니러셀2000
+	_AbroadProductSet.insert("CL"); // 크루드 오일
+	_AbroadProductSet.insert("HO"); // 난방유
+	_AbroadProductSet.insert("NG"); // 천연가스
+	_AbroadProductSet.insert("QG"); // 미니천연가스
+	_AbroadProductSet.insert("QM"); // 미니크루드 오일
+	_AbroadProductSet.insert("RB"); // 가솔린
+	_AbroadProductSet.insert("GC");
+	_AbroadProductSet.insert("MGC");
+	_AbroadProductSet.insert("OGC");
+	_AbroadProductSet.insert("OSI");
+	_AbroadProductSet.insert("QO");
+	_AbroadProductSet.insert("SI");
+	_AbroadProductSet.insert("YM");
+	_AbroadProductSet.insert("ZF");
+	_AbroadProductSet.insert("ZN");
+	_AbroadProductSet.insert("ZQ");
+	_AbroadProductSet.insert("OZC");
+	_AbroadProductSet.insert("OZS");
+	_AbroadProductSet.insert("OZW");
+	_AbroadProductSet.insert("ZC");
+	_AbroadProductSet.insert("ZL");
+	_AbroadProductSet.insert("ZM");
+	_AbroadProductSet.insert("ZS");
+	_AbroadProductSet.insert("ZW");
+	_AbroadProductSet.insert("CN");
+	_AbroadProductSet.insert("NK");
+	_AbroadProductSet.insert("TW");
+	//	_AbroadProductSet.insert("BRN");
+	_AbroadProductSet.insert("HSI"); // 항생
+	_AbroadProductSet.insert("VX");
+	_AbroadProductSet.insert("GF");
+	_AbroadProductSet.insert("HF");
+	_AbroadProductSet.insert("HG");
+	_AbroadProductSet.insert("LE");
 }
 
 std::shared_ptr<SmSymbol> SmMarketManager::GetRecentSymbol(std::string product_name)
@@ -274,10 +433,10 @@ std::shared_ptr<SmSymbol> SmMarketManager::GetRecentSymbol(std::string product_n
 
 std::shared_ptr<SmSymbol> SmMarketManager::GetRecentSymbol(std::string market_name, std::string product_name)
 {
-	SmMarket* market = FindMarket(market_name);
+	std::shared_ptr<SmMarket> market = FindMarket(market_name);
 	if (!market)
 		return nullptr;
-	SmCategory* product = market->FindCategory(product_name);
+	std::shared_ptr<SmProduct> product = market->FindProduct(product_name);
 	if (!product)
 		return nullptr;
 	std::shared_ptr<SmProductYearMonth> ym = product->GetRecentYearMonth();
@@ -338,10 +497,10 @@ void SmMarketManager::SendSymbolMaster(int session_id, std::shared_ptr<SmSymbol>
 	sessMgr->send(session_id, content);
 }
 
-SmMarket* SmMarketManager::FindMarket(std::string mrkt_name)
+std::shared_ptr<SmMarket> SmMarketManager::FindMarket(std::string mrkt_name)
 {
 	for (auto it = _MarketList.begin(); it != _MarketList.end(); ++it) {
-		SmMarket* mrkt = *it;
+		std::shared_ptr<SmMarket> mrkt = *it;
 		if (mrkt->Name().find(mrkt_name) != std::string::npos) {
 			return mrkt;
 		}

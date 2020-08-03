@@ -5,11 +5,11 @@
 #include <map>
 class SmSymbol;
 class SmProductYearMonth;
-class SmCategory
+class SmProduct
 {
 public:
-	SmCategory();
-	~SmCategory();
+	SmProduct();
+	~SmProduct();
 	std::string Code() const { return _Code; }
 	void Code(std::string val) { _Code = val; }
 	std::string NameKr() const { return _NameKr; }
@@ -31,9 +31,13 @@ public:
 		return _SymbolList;
 	}
 	std::shared_ptr<SmSymbol> GetRecentMonthSymbol();
+	std::shared_ptr<SmSymbol> GetNextMonthSymbol();
 
 	std::shared_ptr<SmProductYearMonth> GetRecentYearMonth();
 	std::shared_ptr<SmProductYearMonth> GetNextYearMonth();
+
+	void AddToYearMonth(std::string symbol_code, std::shared_ptr<SmSymbol> symbol);
+
 private:
 	// 품목코드
 	std::string _Code;
@@ -65,6 +69,5 @@ private:
 	std::string _MarketCode;
 	std::vector<std::shared_ptr<SmSymbol>> _SymbolList;
 	std::map<std::string, std::shared_ptr<SmProductYearMonth>> _YearMonthMap;
-	void AddToYearMonth(std::string symbol_code, std::shared_ptr<SmSymbol> symbol);
 };
 
