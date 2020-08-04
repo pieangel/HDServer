@@ -25,6 +25,9 @@ public:
 	void AddCategoryMarket(std::string cat_code, std::string mrkt_name);
 	std::shared_ptr<SmProduct> FindProduct(std::string cat_code);
 	std::vector<std::shared_ptr<SmSymbol>> GetRecentMonthSymbolList();
+
+	std::vector<std::shared_ptr<SmSymbol>> GetRecentNextMonthSymbolList();
+
 	void SendMarketList(std::string user_id);
 	void SendSymbolListByCategory(std::string user_id);
 	void SendMarketList(int session_id);

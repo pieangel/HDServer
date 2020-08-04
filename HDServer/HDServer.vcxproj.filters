@@ -214,12 +214,6 @@
     <ClInclude Include="HDCtrl\hdfcommagent.h">
       <Filter>HdClient</Filter>
     </ClInclude>
-    <ClInclude Include="HDCtrl\SmHdClient.h">
-      <Filter>HdClient</Filter>
-    </ClInclude>
-    <ClInclude Include="HDCtrl\SmHdCtrl.h">
-      <Filter>HdClient</Filter>
-    </ClInclude>
     <ClInclude Include="Json\json.hpp">
       <Filter>Json</Filter>
     </ClInclude>
@@ -607,12 +601,6 @@
       <Filter>Grid</Filter>
     </ClCompile>
     <ClCompile Include="HDCtrl\hdfcommagent.cpp">
-      <Filter>HdClient</Filter>
-    </ClCompile>
-    <ClCompile Include="HDCtrl\SmHdClient.cpp">
-      <Filter>HdClient</Filter>
-    </ClCompile>
-    <ClCompile Include="HDCtrl\SmHdCtrl.cpp">
       <Filter>HdClient</Filter>
     </ClCompile>
     <ClCompile Include="Log\loguru.cpp">

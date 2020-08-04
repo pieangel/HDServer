@@ -25,7 +25,7 @@
 #include "../Symbol/SmSymbol.h"
 #include "../Log/loguru.hpp"
 #include "../Symbol/SmSymbolManager.h"
-#include "../HDCtrl/SmHdClient.h"
+//#include "../HDCtrl/SmHdClient.h"
 #include "../Chart/SmChartDataManager.h"
 #include "../Ai/SmAIIndicatorManager.h"
 #include "../Ai/SmCorrelationManager.h"

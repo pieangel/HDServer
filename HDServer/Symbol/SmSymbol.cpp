@@ -18,6 +18,7 @@
 #include "../Chart/SmChartData.h"
 #include "../Log/loguru.hpp"
 #include "afxwin.h"
+#include "../Global/SmGlobal.h"
 
 using namespace nlohmann;
 SmSymbol::SmSymbol()
@@ -718,8 +719,8 @@ void SmSymbol::MakePrevChartData(int total_min_diff, std::string symbol_code, st
 		}
 		else {
 			SendCycleChartData(data);
-			//chart_data = chartDataMgr->CreateChartData(data);
-			//chart_data->AddChartData(std::move(data));
+			chart_data = chartDataMgr->AddChartData(data);
+			chart_data->AddChartData(std::move(data));
 			CString msg;
 			msg.Format(_T("MakePrevChartData ::code = %s, cycle = %d, date = %s, t = %s, o = %d, h = %d, l = %d, c = %d, v = %d\n"), data.symbolCode.c_str(), data.cycle, data.date.c_str(), data.time.c_str(), data.o, data.h, data.l, data.c, data.v);
 			TRACE(msg);
@@ -737,7 +738,7 @@ void SmSymbol::MakePrevChartData(int total_min_diff, std::string symbol_code, st
 void SmSymbol::SendCycleChartData(SmChartDataItem item)
 {
 	json send_object;
-	send_object["req_id"] = SmProtocol::req_cycle_data_resend_onebyone;
+	send_object["req_id"] = SmProtocol::res_chart_cycle_data;
 	send_object["symbol_code"] = item.symbolCode;
 	send_object["chart_type"] = item.chartType;
 	send_object["cycle"] = item.cycle;
@@ -750,6 +751,8 @@ void SmSymbol::SendCycleChartData(SmChartDataItem item)
 	send_object["v"] = item.v;
 
 	std::string content = send_object.dump();
-	//SmSessionManager::GetInstance()->Send(content);
+	SmGlobal* global = SmGlobal::GetInstance();
+	std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
+	sessMgr->send(content);
 }
 

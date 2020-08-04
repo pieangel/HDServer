@@ -236,12 +236,16 @@ void CMainFrame::HideProgress()
 	// 서버를 시작한다.
 	StartServer();
 
+	// 종목들을 실시간 등록시켜 준다.
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-	std::vector<std::shared_ptr<SmSymbol>> sym_vec = marketMgr->GetRecentMonthSymbolList();
+	std::vector<std::shared_ptr<SmSymbol>> sym_vec = marketMgr->GetRecentNextMonthSymbolList();
 	for (auto it = sym_vec.begin(); it != sym_vec.end(); ++it) {
 		auto sym = *it;
 		SmRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->SymbolCode().c_str());
 	}
+	
+	// 차트 데이터 수집을 시작한다.
+	SmSymbolManager::GetInstance()->StartCollectData();
 }
 
 void CMainFrame::ReadConfig()

@@ -102,24 +102,6 @@ std::shared_ptr<SmProduct> SmMarketManager::FindProduct(std::string cat_code)
 	return nullptr;
 }
 
-/*
-std::vector<std::shared_ptr<SmSymbol>> SmMarketManager::GetRecentMonthSymbolList()
-{
-	std::vector<std::shared_ptr<SmSymbol>> symvec;
-	for (auto it = _MarketList.begin(); it != _MarketList.end(); ++it) {
-		SmMarket* mrkt = *it;
-		auto cat_vec = mrkt->GetCategoryList();
-		for (auto itc = cat_vec.begin(); itc != cat_vec.end(); ++itc) {
-			std::shared_ptr<SmSymbol> sym = (*itc)->GetRecentMonthSymbol();
-			if (sym)
-				symvec.push_back(sym);
-		}
-	}
-
-	return symvec;
-}
-*/
-
 
 std::vector<std::shared_ptr<SmSymbol>> SmMarketManager::GetRecentMonthSymbolList()
 {
@@ -130,6 +112,35 @@ std::vector<std::shared_ptr<SmSymbol>> SmMarketManager::GetRecentMonthSymbolList
 		for (auto itc = cat_vec.begin(); itc != cat_vec.end(); ++itc) {
 			
 			std::shared_ptr<SmProductYearMonth> ym = (*itc)->GetRecentYearMonth();
+			if (ym) {
+				for (auto itym = ym->SymbolList.begin(); itym != ym->SymbolList.end(); ++itym) {
+					(*itym)->Quote.SymbolCode = (*itym)->SymbolCode();
+					symvec.push_back(*itym);
+				}
+			}
+		}
+	}
+
+	return symvec;
+}
+
+std::vector<std::shared_ptr<SmSymbol>> SmMarketManager::GetRecentNextMonthSymbolList()
+{
+	std::vector<std::shared_ptr<SmSymbol>> symvec;
+	for (auto it = _MarketList.begin(); it != _MarketList.end(); ++it) {
+		std::shared_ptr<SmMarket> mrkt = *it;
+		auto cat_vec = mrkt->GetCategoryList();
+		for (auto itc = cat_vec.begin(); itc != cat_vec.end(); ++itc) {
+
+			std::shared_ptr<SmProductYearMonth> ym = (*itc)->GetRecentYearMonth();
+			if (ym) {
+				for (auto itym = ym->SymbolList.begin(); itym != ym->SymbolList.end(); ++itym) {
+					(*itym)->Quote.SymbolCode = (*itym)->SymbolCode();
+					symvec.push_back(*itym);
+				}
+			}
+
+			ym = (*itc)->GetNextYearMonth();
 			if (ym) {
 				for (auto itym = ym->SymbolList.begin(); itym != ym->SymbolList.end(); ++itym) {
 					(*itym)->Quote.SymbolCode = (*itym)->SymbolCode();

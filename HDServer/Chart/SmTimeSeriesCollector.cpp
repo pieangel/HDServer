@@ -4,7 +4,6 @@
 #include <chrono>
 #include <vector>
 #include "../Symbol/SmSymbol.h"
-#include "../HDCtrl/SmHdClient.h"
 #include "../Json/json.hpp"
 #include <ctime>
 #include "../Database/SmTimeSeriesDBManager.h"
@@ -39,8 +38,8 @@ void SmTimeSeriesCollector::CollectRecentMonthSymbolChartData()
 	req.cycle = 1;
 	req.count = 1500;
 	req.next = 0;
-	SmHdClient* client = SmHdClient::GetInstance();
-	client->GetChartData(req);
+	//SmHdClient* client = SmHdClient::GetInstance();
+	//client->GetChartData(req);
 	_Index++;
 	if (_Index == _RecentMonthSymbolVec.size()) {
 		_Timer.remove(_ChartDataTimerId);
@@ -71,8 +70,8 @@ void SmTimeSeriesCollector::StartCollectHogaData()
 
 void SmTimeSeriesCollector::GetChartData(SmChartDataRequest&& data_req)
 {
-	SmHdClient* client = SmHdClient::GetInstance();
-	client->GetChartData(data_req);
+	//SmHdClient* client = SmHdClient::GetInstance();
+	//client->GetChartData(data_req);
 }
 
 void SmTimeSeriesCollector::GetRecentMonthSymbolList()
@@ -120,8 +119,8 @@ void SmTimeSeriesCollector::OnSiseTimer()
 	if (_SiseIndex >= _RecentMonthSymbolVec.size())
 		return;
 	std::shared_ptr<SmSymbol> sym = _RecentMonthSymbolVec[_SiseIndex];
-	SmHdClient * client = SmHdClient::GetInstance();
-	client->GetSiseData(sym->SymbolCode());
+	//SmHdClient * client = SmHdClient::GetInstance();
+	//client->GetSiseData(sym->SymbolCode());
 	_SiseIndex++;
 	if (_SiseIndex == _RecentMonthSymbolVec.size()) {
 		_Timer.remove(_SiseTimerId);
@@ -133,8 +132,8 @@ void SmTimeSeriesCollector::OnHogaTimer()
 	if (_HogaIndex >= _RecentMonthSymbolVec.size())
 		return;
 	std::shared_ptr<SmSymbol> sym = _RecentMonthSymbolVec[_HogaIndex];
-	SmHdClient* client = SmHdClient::GetInstance();
-	client->GetHogaData(sym->SymbolCode());
+	//SmHdClient* client = SmHdClient::GetInstance();
+	//client->GetHogaData(sym->SymbolCode());
 	_HogaIndex++;
 	if (_HogaIndex == _RecentMonthSymbolVec.size()) {
 		_Timer.remove(_HogaTimerId);

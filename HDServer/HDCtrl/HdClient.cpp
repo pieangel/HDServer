@@ -2382,8 +2382,32 @@ void HdClient::OnAbRealtimeSise(CString& strKey, LONG& nRealType)
 // 	sym->AccAmount(_ttoi(strAccAmount));
 
 
+// 	int preday_ratio = _ttoi(strUpRate);
+// 	SmQuoteData quoteItem;
+// 	quoteItem.symbol_code = strSymCode.Trim();
+// 	quoteItem.time = strTime;
+// 	if (preday_ratio > 0)
+// 		quoteItem.up_down = "+";
+// 	else if (preday_ratio < 0)
+// 		quoteItem.up_down = "-";
+// 	else
+// 		quoteItem.up_down = "";
+// 	// 갭은 그냥 보낸다.
+// 	quoteItem.to_preday = strToPreDay;
+// 	// 등락율은 퍼센트로 바꿔서 보낸다.
+// 	CString tempRatio;
+// 	tempRatio.Format("%.2f", preday_ratio / 100.0);
+// 	strRatioToPreDay = tempRatio;
+// 	quoteItem.up_down_rate = strRatioToPreDay;
+// 	quoteItem.close = strClose;
+// 	quoteItem.open = strOpen;
+// 	quoteItem.high = strHigh;
+// 	quoteItem.low = strLow;
+// 	quoteItem.volume = strVolume;
+// 	quoteItem.sign = strSign.Trim();
+// 	quoteItem.acc_vol = _ttoi(strAccAmount);
 
-
+	double updown = _ttof(strUpRate);
 
 	SmQuoteData quote;
 
@@ -2392,8 +2416,13 @@ void HdClient::OnAbRealtimeSise(CString& strKey, LONG& nRealType)
 	quote.time = (LPCTSTR)strTime.Trim();
 	quote.volume = (LPCTSTR)strVolume.Trim();
 	quote.up_down = (LPCTSTR)strUpdown.Trim();
-	quote.sign = (LPCTSTR)strUpdown.Trim();
-	quote.up_down_rate = (LPCTSTR)strUpRate.Trim();
+	if (updown > 0.0)
+		quote.sign = "+";
+	else if (updown < 0.0)
+		quote.sign = "-";
+	else
+		quote.sign = "";
+	//quote.up_down_rate = (LPCTSTR)strUpRate.Trim();
 	quote.to_preday = (LPCTSTR)strPreDayCmp.Trim();
 	quote.close = (LPCTSTR)strCloseP;
 	quote.open = (LPCTSTR)strOpen;
@@ -2874,119 +2903,183 @@ void HdClient::OnProductHoga(CString& strKey, LONG& nRealType)
 void HdClient::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 {
 	CHDFCommAgent& m_CommAgent = _HdCtrl->GetHdAgent();
-	CString strSeries = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+// 	CString strSeries = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+// 	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+// 	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
+// 	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
+// 
+// 	auto cur_time = VtStringUtil::GetCurrentDateTime();
+// 
+// 	std::string sys_time = cur_time.second;
+// 
+// 
+// 	//OutputDebugString(msg);
+// 
+// 
+// 	CString	strData051 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
+// 	CString	strData052 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
+// 	CString	strData053 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
+// 	CString	strData054 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
+// 	CString strCom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "전일대비");
+// 	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "등락율");
+// 	CString strAccVol = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "누적거래량");
+// 
+	
+// 
+// 
+// 	SmQuoteData quote;
+// 
+// 	quote.symbol_code = (LPCTSTR)strSeries.TrimRight();
+// 	quote.command = 1;
+// 	quote.time = (LPCTSTR)strTime.Trim();
+// 	quote.volume = (LPCTSTR)strVolume.Trim();
+// 	quote.up_down = (LPCTSTR)strUpdown.Trim();
+// 	quote.sign = (LPCTSTR)strUpdown.Trim();
+// 	quote.up_down_rate = (LPCTSTR)strUpRate.Trim();
+// 	quote.to_preday = (LPCTSTR)strCom.Trim();
+// 	quote.close = (LPCTSTR)strData051;
+// 	quote.open = (LPCTSTR)strData052;
+// 	quote.high = (LPCTSTR)strData053;
+// 	quote.low = (LPCTSTR)strData054;
+// 	quote.acc_vol = (LPCTSTR)strAccVol;
+
+
+	CString strSymCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
 	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strSignToPreDay = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사인");
+	CString strToPreDay = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "전일대비");
+	CString strRatioToPreDay = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "등락율");
+	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
+	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
+	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
+	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
 	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
-
-	auto cur_time = VtStringUtil::GetCurrentDateTime();
-
-	std::string sys_time = cur_time.second;
-
-
-	//OutputDebugString(msg);
-
-
-	CString	strData051 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
-	CString	strData052 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
-	CString	strData053 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
-	CString	strData054 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
-	CString strCom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "전일대비");
-	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "등락율");
+	// '+' 매수, '-' 매도
+	CString strSign = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
 	CString strAccVol = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "누적거래량");
 
 	CString msg;
-	msg.Format(_T(" OnRealFutureQuote code = %s, system_time = %s, \n 현재가 = %s\n"), strSeries, sys_time.c_str(), strData051);
-	//TRACE(msg);
+	msg.Format(_T(" OnRealFutureQuote code = %s, system_time = %s, \n 현재가 = %s\n"), strSymCode, strTime, strClose);
+	TRACE(msg);
 
-
-	SmQuoteData quote;
-
-	quote.symbol_code = (LPCTSTR)strSeries.TrimRight();
-	quote.command = 1;
-	quote.time = (LPCTSTR)strTime.Trim();
-	quote.volume = (LPCTSTR)strVolume.Trim();
-	quote.up_down = (LPCTSTR)strUpdown.Trim();
-	quote.sign = (LPCTSTR)strUpdown.Trim();
-	quote.up_down_rate = (LPCTSTR)strUpRate.Trim();
-	quote.to_preday = (LPCTSTR)strCom.Trim();
-	quote.close = (LPCTSTR)strData051;
-	quote.open = (LPCTSTR)strData052;
-	quote.high = (LPCTSTR)strData053;
-	quote.low = (LPCTSTR)strData054;
-	quote.acc_vol = (LPCTSTR)strAccVol;
+	int preday_ratio = _ttoi(strRatioToPreDay);
+	SmQuoteData quoteItem;
+	quoteItem.symbol_code = strSymCode.Trim();
+	quoteItem.time = strTime;
+	if (preday_ratio > 0)
+		quoteItem.up_down = "+";
+	else if (preday_ratio < 0)
+		quoteItem.up_down = "-";
+	else
+		quoteItem.up_down = "";
+	// 갭은 그냥 보낸다.
+	quoteItem.to_preday = strToPreDay;
+	// 등락율은 퍼센트로 바꿔서 보낸다.
+	CString tempRatio;
+	tempRatio.Format("%.2f", preday_ratio / 100.0);
+	strRatioToPreDay = tempRatio;
+	quoteItem.up_down_rate = strRatioToPreDay;
+	quoteItem.close = strClose;
+	quoteItem.open = strOpen;
+	quoteItem.high = strHigh;
+	quoteItem.low = strLow;
+	quoteItem.volume = strVolume;
+	quoteItem.sign = quoteItem.up_down;
+	quoteItem.acc_vol = strAccVol;
 
 	// 쓰레드 큐에 넣는다.
-	SmRealtimeQuoteManager::GetInstance()->AddFutTask(std::move(quote));
+	SmRealtimeQuoteManager::GetInstance()->AddFutTask(std::move(quoteItem));
 }
 
 void HdClient::OnRealOptionQuote(CString& strKey, LONG& nRealType)
 {
 	CHDFCommAgent& m_CommAgent = _HdCtrl->GetHdAgent();
-	CString strSeries = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strSymCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
 	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strSignToPreDay = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사인");
+	CString strToPreDay = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "전일대비");
+	CString strRatioToPreDay = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "등락율");
+	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
+	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
+	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
+	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
 	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
+	// '+' 매수, '-' 매도
+	CString strSign = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
+	CString strAccVol = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "누적거래량");
 
-	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "등락율");
-	CString strCom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "전일대비");
-
-	CString	strData051 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
-	CString	strData052 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
-	CString	strData053 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
-	CString	strData054 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
-
-	SmQuoteData quote;
-
-	quote.symbol_code = (LPCTSTR)strSeries.TrimRight();
-	quote.command = 1;
-	quote.time = (LPCTSTR)strTime.Trim();
-	quote.volume = (LPCTSTR)strVolume.Trim();
-	quote.up_down = (LPCTSTR)strUpdown.Trim();
-	quote.sign = (LPCTSTR)strUpdown.Trim();
-	quote.up_down_rate = (LPCTSTR)strUpRate.Trim();
-	quote.to_preday = (LPCTSTR)strCom.Trim();
-	quote.close = (LPCTSTR)strData051;
-	quote.open = (LPCTSTR)strData052;
-	quote.high = (LPCTSTR)strData053;
-	quote.low = (LPCTSTR)strData054;
+	int preday_ratio = _ttoi(strRatioToPreDay);
+	SmQuoteData quoteItem;
+	quoteItem.symbol_code = strSymCode.Trim();
+	quoteItem.time = strTime;
+	if (preday_ratio > 0)
+		quoteItem.up_down = "+";
+	else if (preday_ratio < 0)
+		quoteItem.up_down = "-";
+	else
+		quoteItem.up_down = "";
+	// 갭은 그냥 보낸다.
+	quoteItem.to_preday = strToPreDay;
+	// 등락율은 퍼센트로 바꿔서 보낸다.
+	CString tempRatio;
+	tempRatio.Format("%.2f", preday_ratio / 100.0);
+	strRatioToPreDay = tempRatio;
+	quoteItem.up_down_rate = strRatioToPreDay;
+	quoteItem.close = strClose;
+	quoteItem.open = strOpen;
+	quoteItem.high = strHigh;
+	quoteItem.low = strLow;
+	quoteItem.volume = strVolume;
+	quoteItem.sign = quoteItem.up_down;
+	quoteItem.acc_vol = strAccVol;
 
 	// 쓰레드 큐에 넣는다.
-	SmRealtimeQuoteManager::GetInstance()->AddOptTask(std::move(quote));
+	SmRealtimeQuoteManager::GetInstance()->AddOptTask(std::move(quoteItem));
 }
 
 void HdClient::OnRealProductQuote(CString& strKey, LONG& nRealType)
 {
 	CHDFCommAgent& m_CommAgent = _HdCtrl->GetHdAgent();
-	CString strSeries = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strSymCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
 	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strSignToPreDay = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "sign");
+	CString strToPreDay = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "change");
+	CString strRatioToPreDay = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "drate");
+	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
+	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "open");
+	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "high");
+	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "low");
 	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "cvolume");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "cgubun");
+	// '+' 매수, '-' 매도
+	CString strSign = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "cgubun");
+	CString strAccVol = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "누적거래량");
 
-	CString	strData051 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
-	CString	strData052 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "open");
-	CString	strData053 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "high");
-	CString	strData054 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "low");
-
-	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "등락율");
-	CString strCom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "전일대비");
-
-	SmQuoteData quote;
-
-	quote.symbol_code = (LPCTSTR)strSeries.TrimRight();
-	quote.command = 1;
-	quote.time = (LPCTSTR)strTime.Trim();
-	quote.volume = (LPCTSTR)strVolume.Trim();
-	quote.up_down = (LPCTSTR)strUpdown.Trim();
-	quote.sign = (LPCTSTR)strUpdown.Trim();
-	quote.up_down_rate = (LPCTSTR)strUpRate.Trim();
-	quote.to_preday = (LPCTSTR)strCom.Trim();
-	quote.close = (LPCTSTR)strData051;
-	quote.open = (LPCTSTR)strData052;
-	quote.high = (LPCTSTR)strData053;
-	quote.low = (LPCTSTR)strData054;
+	int preday_ratio = _ttoi(strRatioToPreDay);
+	SmQuoteData quoteItem;
+	quoteItem.symbol_code = strSymCode.Trim();
+	quoteItem.time = strTime;
+	if (preday_ratio > 0)
+		quoteItem.up_down = "+";
+	else if (preday_ratio < 0)
+		quoteItem.up_down = "-";
+	else
+		quoteItem.up_down = "";
+	// 갭은 그냥 보낸다.
+	quoteItem.to_preday = strToPreDay;
+	// 등락율은 퍼센트로 바꿔서 보낸다.
+	CString tempRatio;
+	tempRatio.Format("%.2f", preday_ratio / 100.0);
+	strRatioToPreDay = tempRatio;
+	quoteItem.up_down_rate = strRatioToPreDay;
+	quoteItem.close = strClose;
+	quoteItem.open = strOpen;
+	quoteItem.high = strHigh;
+	quoteItem.low = strLow;
+	quoteItem.volume = strVolume;
+	quoteItem.sign = quoteItem.up_down;
+	quoteItem.acc_vol = strAccVol;
 
 	// 쓰레드 큐에 넣는다.
-	SmRealtimeQuoteManager::GetInstance()->AddProTask(std::move(quote));
+	SmRealtimeQuoteManager::GetInstance()->AddProTask(std::move(quoteItem));
 }
 

@@ -4,7 +4,6 @@
 #include "../Database/SmTimeSeriesDBManager.h"
 #include "../Json/json.hpp"
 #include "../Log/loguru.hpp"
-#include "../HDCtrl/SmHdClient.h"
 #include "../Util/SmUtil.h"
 #include "../Util/VtStringUtil.h"
 #include "../Service/SmServiceDefine.h"
@@ -55,8 +54,8 @@ void SmChartData::GetChartDataFromServer()
 	req.cycle = _Cycle;
 	req.count = _DataQueueSize;
 	req.next = 0;
-	SmHdClient* client = SmHdClient::GetInstance();
-	client->GetChartData(req);
+	//SmHdClient* client = SmHdClient::GetInstance();
+	//client->GetChartData(req);
 }
 
 void SmChartData::GetCyclicDataFromServer()
@@ -68,8 +67,8 @@ void SmChartData::GetCyclicDataFromServer()
 	req.cycle = _Cycle;
 	req.count = _CycleDataSize;
 	req.next = 0;
-	SmHdClient* client = SmHdClient::GetInstance();
-	client->GetChartData(req);
+	//SmHdClient* client = SmHdClient::GetInstance();
+	//client->GetChartData(req);
 }
 
 void SmChartData::SendCyclicChartDataToUsers()

@@ -6,7 +6,7 @@
 #include "../User/SmUserManager.h"
 #include "../Json/json.hpp"
 #include <vector>
-#include "../HDCtrl/SmHdClient.h"
+//#include "../HDCtrl/SmHdClient.h"
 #include "../Log/loguru.hpp"
 #include "../Chart/SmChartData.h"
 #include "../Util/SmUtil.h"
@@ -68,8 +68,8 @@ void SmTimeSeriesServiceManager::OnRegisterCycleDataRequest(SmChartDataRequest&&
 	}
 	// 차트 데이터를 등록해 준다.
 	std::shared_ptr<SmChartData> chart_data = AddCycleDataReq(data_req);
-	SmHdClient* client = SmHdClient::GetInstance();
-	client->GetChartData(data_req);
+	//SmHdClient* client = SmHdClient::GetInstance();
+	//client->GetChartData(data_req);
 	// 차트 데이터 타이머 서비스를 등록해 준다.
 	RegisterTimer(chart_data);
 }
@@ -510,8 +510,8 @@ void SmTimeSeriesServiceManager::SendChartDataFromDB(SmChartDataRequest&& data_r
 
 void SmTimeSeriesServiceManager::GetChartDataFromSourceServer(SmChartDataRequest&& data_req)
 {
-	SmHdClient* client = SmHdClient::GetInstance();
-	client->GetChartData(data_req);
+	//SmHdClient* client = SmHdClient::GetInstance();
+	//client->GetChartData(data_req);
 }
 
 

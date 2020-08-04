@@ -303,7 +303,14 @@ void SmSymbolReader::ReadJmFile(std::string fullPath)
 
 		SmSymbolManager* symMgr = SmSymbolManager::GetInstance();
 		std::shared_ptr<SmProduct> product = marketMgr->FindProduct(MrktCd);
-		if (product) {
+
+		bool included = false;
+		// 해외선물 목록 중 운영중인 목록만 읽어 온다.
+		std::set<std::string>& abroad_product_set = SmMarketManager::GetInstance()->GetAbroadProductSet();
+		auto it = abroad_product_set.find(product->Code());
+		if (it != abroad_product_set.end())
+			included = true;
+		if (product && included) {
 			std::shared_ptr<SmSymbol> sym = product->AddSymbol(Series);
 
 			product->AddToYearMonth(sym->SymbolCode(), sym);

@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "SmChartDataManager.h"
 #include "SmChartData.h"
-#include "../HDCtrl/SmHdClient.h"
 #include "../Service/SmTimeSeriesServiceManager.h"
 #include "../Database/SmMongoDBManager.h"
 #include "../Symbol/SmSymbolManager.h"
@@ -38,6 +37,12 @@ void SmChartDataManager::AddChartData(std::shared_ptr<SmChartData> chart_data)
 	auto it = _ChartDataMap.find(chart_data->GetDataKey());
 	if (it == _ChartDataMap.end()) {
 		_ChartDataMap[chart_data->GetDataKey()] = chart_data;
+		std::shared_ptr<SmSymbol> symbol = SmSymbolManager::GetInstance()->FindSymbol(chart_data->SymbolCode());
+		// 심볼에 차트 데이터를 추가해 준다. 
+		// 종가 업데이트를 위해서 꼭 필요하다.
+		if (symbol) {
+			symbol->addChartData(chart_data->GetDataKey(), chart_data);
+		}
 	}
 }
 
@@ -50,6 +55,12 @@ std::shared_ptr<SmChartData> SmChartDataManager::AddChartData(SmChartDataRequest
 		chartData->ChartType(data_req.chartType);
 		chartData->Cycle(data_req.cycle);
 		_ChartDataMap[data_req.GetDataKey()] = chartData;
+		std::shared_ptr<SmSymbol> symbol = SmSymbolManager::GetInstance()->FindSymbol(data_req.symbolCode);
+		// 심볼에 차트 데이터를 추가해 준다. 
+		// 종가 업데이트를 위해서 꼭 필요하다.
+		if (symbol) {
+			symbol->addChartData(data_req.GetDataKey(), chartData);
+		}
 	}
 
 	return chartData;
@@ -64,6 +75,13 @@ std::shared_ptr<SmChartData> SmChartDataManager::AddChartData(SmChartDataItem da
 		chartData->ChartType(data_item.chartType);
 		chartData->Cycle(data_item.cycle);
 		_ChartDataMap[data_item.GetDataKey()] = chartData;
+
+		std::shared_ptr<SmSymbol> symbol = SmSymbolManager::GetInstance()->FindSymbol(data_item.symbolCode);
+		// 심볼에 차트 데이터를 추가해 준다. 
+		// 종가 업데이트를 위해서 꼭 필요하다.
+		if (symbol) {
+			symbol->addChartData(data_item.GetDataKey(), chartData);
+		}
 	}
 
 	return chartData;
@@ -79,6 +97,13 @@ std::shared_ptr<SmChartData> SmChartDataManager::AddChartData(std::string symbol
 		chartData->ChartType((SmChartType)chart_type);
 		chartData->Cycle(cycle);
 		_ChartDataMap[data_key] = chartData;
+
+		std::shared_ptr<SmSymbol> symbol = SmSymbolManager::GetInstance()->FindSymbol(symbol_code);
+		// 심볼에 차트 데이터를 추가해 준다. 
+		// 종가 업데이트를 위해서 꼭 필요하다.
+		if (symbol) {
+			symbol->addChartData(data_key, chartData);
+		}
 	}
 
 	return chartData;
@@ -93,6 +118,13 @@ std::shared_ptr<SmChartData> SmChartDataManager::AddChartData(SmChartDataItem&& 
 		chartData->ChartType(data_item.chartType);
 		chartData->Cycle(data_item.cycle);
 		_ChartDataMap[data_item.GetDataKey()] = chartData;
+
+		std::shared_ptr<SmSymbol> symbol = SmSymbolManager::GetInstance()->FindSymbol(data_item.symbolCode);
+		// 심볼에 차트 데이터를 추가해 준다. 
+		// 종가 업데이트를 위해서 꼭 필요하다.
+		if (symbol) {
+			symbol->addChartData(data_item.GetDataKey(), chartData);
+		}
 	}
 
 	return chartData;
@@ -228,7 +260,7 @@ bool SmChartDataManager::ExecuteTask(std::array<SmChartDataRequest, ChartArraySi
 
 	for (auto it = request_set.begin(); it != request_set.end(); ++it) {
 		SmChartDataRequest item = it->second;
-		SmHdClient::GetInstance()->GetChartData(item);
+		//SmHdClient::GetInstance()->GetChartData(item);
 		//std::this_thread::sleep_for(std::chrono::milliseconds(700));
 	}
 

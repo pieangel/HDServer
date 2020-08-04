@@ -3,12 +3,20 @@
 #include "SmSymbol.h"
 #include "../Log/loguru.hpp"
 #include "../Config/SmConfigManager.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <iostream>
+#include "../Util/SmUtil.h"
+#include <chrono>
 #include <sstream>
+#include <fstream>
+#include "../Util/VtStringUtil.h"
+#include "../Log/loguru.hpp"
+#include <algorithm>
+#include "../Json/json.hpp"
+#include "../Format/format.h"
+#include "../Market/SmMarketManager.h"
+
+using namespace nlohmann;
+
+using namespace std::chrono;
 
 SmSymbolManager::SmSymbolManager()
 {
@@ -78,6 +86,65 @@ std::string& SmSymbolManager::TrimBoth(std::string& input, char c)
 	return TrimLeft(TrimRight(input, c), c);
 }
 
+
+void SmSymbolManager::StartCollectData()
+{
+	SmMarketManager* mrktMgr = SmMarketManager::GetInstance();
+	std::vector<std::shared_ptr<SmSymbol>> symbol_list = mrktMgr->GetRecentMonthSymbolList();
+
+	for (auto it = symbol_list.begin(); it != symbol_list.end(); ++it) {
+		std::shared_ptr<SmSymbol> symbol = *it;
+		//if (symbol->SymbolCode().compare("CLN20") == 0) {
+		//HdClient::GetInstance()->RegisterProduct(symbol->SymbolCode().c_str());
+		_ChartSymbolVector.push_back(symbol);
+		//}
+	}
+
+	StartTimer();
+}
+
+void SmSymbolManager::OnTimer()
+{
+	for (auto it = _ChartSymbolVector.begin(); it != _ChartSymbolVector.end(); ++it) {
+		std::vector<int> date_time = SmUtil::GetLocalDateTime();
+		int cur_hour = date_time[3];
+		int cur_min = date_time[4];
+		std::shared_ptr<SmSymbol> symbol = *it;
+
+
+		int prev_hour = cur_hour;
+		int prev_min = cur_min - 1;
+		if (prev_min < 0) {
+			prev_hour = prev_hour - 1;
+			prev_min += 60;
+		}
+
+		std::string prev_index = SmUtil::Format("%02d%02d", prev_hour, prev_min);
+		std::string cur_index = SmUtil::Format("%02d%02d", cur_hour, cur_min);
+		// 과거봉의 차트 데이터를 만든다.
+		symbol->MakePrevChartDataByTimer(cur_index);
+		// 현재 봉의 차트 데이터를 만든다.
+		symbol->MakeCurrChartDataByTimer(cur_index);
+	}
+}
+
+void SmSymbolManager::StartTimer()
+{
+	std::vector<int> date_time = SmUtil::GetLocalDateTime();
+	int cur_min = date_time[4];
+
+	int cycle = 1;
+	int waitTime = 0;
+	int cycle_time = cycle * 60;
+	int total_seconds = cur_min * 60 + date_time[5];
+	int mod_seconds = total_seconds % (cycle * 60);
+	int wait_seconds = cycle * 60 - mod_seconds;
+	waitTime = wait_seconds;
+
+	auto id = _Timer.add(seconds(waitTime), std::bind(&SmSymbolManager::OnTimer, this), seconds(cycle_time));
+	// Add to the request map.
+	_CycleDataReqTimerMap[cycle] = id;
+}
 
 void SmSymbolManager::LoadProductInfo()
 {

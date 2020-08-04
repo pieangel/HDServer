@@ -230,8 +230,6 @@
     <ClInclude Include="HDCtrl\HdCtrl.h" />
     <ClInclude Include="HDCtrl\HDDefine.h" />
     <ClInclude Include="HDCtrl\hdfcommagent.h" />
-    <ClInclude Include="HDCtrl\SmHdClient.h" />
-    <ClInclude Include="HDCtrl\SmHdCtrl.h" />
     <ClInclude Include="HDServer.h" />
     <ClInclude Include="HDServerDoc.h" />
     <ClInclude Include="HDServerView.h" />
@@ -369,8 +367,6 @@
     <ClCompile Include="HDCtrl\HdClient.cpp" />
     <ClCompile Include="HDCtrl\HdCtrl.cpp" />
     <ClCompile Include="HDCtrl\hdfcommagent.cpp" />
-    <ClCompile Include="HDCtrl\SmHdClient.cpp" />
-    <ClCompile Include="HDCtrl\SmHdCtrl.cpp" />
     <ClCompile Include="HDServer.cpp" />
     <ClCompile Include="HDServerDoc.cpp" />
     <ClCompile Include="HDServerView.cpp" />

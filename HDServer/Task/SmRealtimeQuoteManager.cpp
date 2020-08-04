@@ -174,8 +174,8 @@ void SmRealtimeQuoteManager::ExecuteTask(SmQuoteData&& item)
 	sym->Quote.Low = std::stoi(item.low);
 	sym->Quote.OriginTime = item.time;
 	sym->Quote.GapFromPreDay = std::stoi(item.to_preday);
-	sym->Quote.RatioToPreday = std::stoi(item.up_down_rate);
-	sym->Quote.SignToPreDay = std::stoi(item.up_down);
+	sym->Quote.RatioToPreday = (item.up_down_rate);
+	sym->Quote.SignToPreDay = (item.up_down);
 	sym->Quote.accVolume = std::stoi(item.acc_vol);
 	
 
@@ -221,13 +221,13 @@ bool SmRealtimeQuoteManager::ExecuteTask(std::array<SmQuoteData, QuoteArraySize>
 		sym->Quote.OriginTime = item.time;
  		sym->Quote.GapFromPreDay = std::stoi(item.to_preday);
  		sym->Quote.RatioToPreday = (item.up_down_rate);
- 		sym->Quote.SignToPreDay = (item.up_down);
+ 		sym->Quote.SignToPreDay = (item.sign);
  		sym->Quote.accVolume = std::stoi(item.acc_vol);
 
 		
 
 		CString msg;
-		msg.Format(_T(" OnFutureHoga symbol_code = %s, time = %s\n"), item.symbol_code.c_str(), item.acc_vol.c_str());
+		msg.Format(_T(" SmRealtimeQuoteManager symbol_code = %s, sign = %s\n"), item.symbol_code.c_str(), item.sign.c_str());
 		TRACE(msg);
 
 		// 손절, 익절, 스탑 주문을 체크한다.
