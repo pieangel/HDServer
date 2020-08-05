@@ -7,13 +7,16 @@
 #include "../Symbol/SmSymbol.h"
 #include <thread>         // std::this_thread::sleep_for
 #include <chrono>         // std::chrono::seconds
+#include "../HDCtrl/HdClient.h"
+
 SmChartDataManager::SmChartDataManager()
 {
+	_BatchProcess = false;
 	_Available = true;
 	StartTaskThread();
 
-	_Pool = new ThreadPool(30);
-	_Pool->init();
+	//_Pool = new ThreadPool(30);
+	//_Pool->init();
 }
 
 SmChartDataManager::~SmChartDataManager()
@@ -22,11 +25,11 @@ SmChartDataManager::~SmChartDataManager()
 	// 만일 큐에 들어오는 것을 막지 않고 쓰레드를 종료하면 절대로 쓰레드가 종료되지 않는다.
 	StopThread();
 
-	if (_Pool) {
-		_Pool->shutdown();
-		delete _Pool;
-		_Pool = nullptr;
-	}
+// 	if (_Pool) {
+// 		_Pool->shutdown();
+// 		delete _Pool;
+// 		_Pool = nullptr;
+// 	}
 }
 
 void SmChartDataManager::AddChartData(std::shared_ptr<SmChartData> chart_data)

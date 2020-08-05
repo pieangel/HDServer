@@ -28,6 +28,8 @@
 #include "../Market/SmProduct.h"
 #include "../Market/SmMarket.h"
 #include "../Symbol/HdProductInfo.h"
+#include "../Task/SmServerRequestManager.h"
+#include "../Log/loguru.hpp"
 
 HdClient::HdClient()
 {
@@ -369,6 +371,9 @@ void HdClient::OnDataRecv(CString& sTrCode, LONG& nRqID)
 	else if (sTrCode == DefAbsChartData2) {
 		OnRcvdAbroadChartData2(sTrCode, nRqID);
 	}
+	else if (sTrCode == DefChartData) {
+		OnRcvdDomesticChartData(sTrCode, nRqID);
+	}
 	else if (sTrCode == DefSymbolCode) {
 		OnDmSymbolCode(sTrCode, nRqID);
 	}
@@ -454,6 +459,7 @@ void HdClient::OnTaskComplete(int nRqId)
 	if (it != _RequestMap.end()) {
 		SmTaskArg& arg = it->second;
 		ViServerDataReceiver::GetInstance()->OnTaskComplete(arg.ArgId);
+		SmServerRequestManager::GetInstance()->OnTaskComplete(arg.ArgId);
 		_RequestMap.erase(it);
 	}
 }
@@ -3081,5 +3087,81 @@ void HdClient::OnRealProductQuote(CString& strKey, LONG& nRealType)
 
 	// 쓰레드 큐에 넣는다.
 	SmRealtimeQuoteManager::GetInstance()->AddProTask(std::move(quoteItem));
+}
+
+
+void HdClient::OnRcvdDomesticChartData(CString& sTrCode, LONG& nRqID)
+{
+	CHDFCommAgent& m_CommAgent = _HdCtrl->GetHdAgent();
+
+	try {
+		int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec2");
+
+		CString msg;
+
+		auto it = _ChartDataReqMap.find(nRqID);
+		if (it == _ChartDataReqMap.end())
+			return;
+		SmChartDataRequest req = it->second;
+		SmChartDataManager* chartDataMgr = SmChartDataManager::GetInstance();
+		std::shared_ptr<SmChartData> chart_data = chartDataMgr->AddChartData(req);
+		int total_count = nRepeatCnt;
+		int current_count = 1;
+
+		for (int i = nRepeatCnt - 1; i >= 0; --i) {
+			CString strDate = "";
+			CString strTime = "";
+
+			CString tempDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "날짜시간");
+
+			if (chart_data->ChartType() == SmChartType::MIN)
+				tempDate.Append(_T("00"));
+			else
+				tempDate.Append(_T("000000"));
+
+
+			strTime = tempDate.Right(6);
+			strDate = tempDate.Left(8);
+
+			CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "시가");
+			CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "고가");
+			CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "저가");
+			CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "종가");
+			CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "거래량");
+
+			if (strDate.GetLength() == 0)
+				continue;
+
+			msg.Format(_T("OnRcvdAbroadChartData ::code = %s, index = %d, date = %s, t = %s, o = %s, h = %s, l = %s, c = %s, v = %s\n"), req.symbolCode.c_str(), i, strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
+			TRACE(msg);
+
+			SmChartDataItem data;
+			data.symbolCode = req.symbolCode;
+			data.chartType = req.chartType;
+			data.cycle = req.cycle;
+			data.date = strDate.Trim();
+			data.time = strTime.Trim();
+			data.date_time = data.date + data.time;
+			data.h = _ttoi(strHigh);
+			data.l = _ttoi(strLow);
+			data.o = _ttoi(strOpen);
+			data.c = _ttoi(strClose);
+			data.v = _ttoi(strVol);
+
+			// 차트데이터 아이템을 차트데이터에 더한다.
+			chart_data->AddData(data);
+		}
+
+		// 차트 데이터 수신 요청 목록에서 제거한다.
+		_ChartDataReqMap.erase(it);
+		//Sleep(500);
+		OnTaskComplete(nRqID);
+	}
+	catch (std::exception& e) {
+		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+	}
+	catch (...) {
+		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+	}
 }
 

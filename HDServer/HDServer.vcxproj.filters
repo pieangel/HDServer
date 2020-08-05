@@ -520,6 +520,9 @@
     <ClInclude Include="File\resolver.h">
       <Filter>File</Filter>
     </ClInclude>
+    <ClInclude Include="Task\SmServerRequestManager.h">
+      <Filter>Task</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -785,6 +788,9 @@
     </ClCompile>
     <ClCompile Include="Archieve\VtSaveManager.cpp">
       <Filter>Archieve</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\SmServerRequestManager.cpp">
+      <Filter>Task</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

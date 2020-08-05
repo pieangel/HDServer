@@ -12,6 +12,10 @@ using namespace code_machina;
 const int ChartArraySize = 100;
 
 class SmChartData;
+// 차트데이터는 기본적으로 서버에서 가져온다.
+// 각 차트데이터는 타이머가 등록되어 있어 주기가 되면 서버에 데이터를 요청한다.
+// 서버에서 수신된 데이터는 차트데이터를 갱신하고 각 클라이언트에 보낸다.
+// 단, 틱데이터는 틱 갯수가 차면 바로 요청을 한다. 
 class SmChartDataManager : public TemplateSingleton<SmChartDataManager>
 {
 public:

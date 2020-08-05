@@ -84,7 +84,7 @@ public:
 	int GetAbChartData(SmTaskArg& arg);
 	void OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID);
 	void OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID);
-
+	void OnRcvdDomesticChartData(CString& sTrCode, LONG& nRqID);
 
 	// 해외 신규 주문 서버 응답
 	void OnNewAbOrderHd(CString& sTrCode, LONG& nRqID);

@@ -738,12 +738,13 @@ void SmSymbol::MakePrevChartData(int total_min_diff, std::string symbol_code, st
 void SmSymbol::SendCycleChartData(SmChartDataItem item)
 {
 	json send_object;
-	send_object["req_id"] = SmProtocol::res_chart_cycle_data;
+	send_object["res_id"] = SmProtocol::res_chart_cycle_data;
 	send_object["symbol_code"] = item.symbolCode;
 	send_object["chart_type"] = item.chartType;
 	send_object["cycle"] = item.cycle;
 	send_object["date"] = item.date;
 	send_object["time"] = item.time;
+	send_object["date_time"] = item.date + item.time;
 	send_object["o"] = item.o;
 	send_object["h"] = item.h;
 	send_object["l"] = item.l;

@@ -41,6 +41,8 @@
 #include "Global/SmGlobal.h"
 #include "Service/SmTimeSeriesServiceManager.h"
 #include "Log/SmLogManager.h"
+#include "User/SmUserManager.h"
+#include "Task/SmServerRequestManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,6 +57,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
 	ON_COMMAND(ID_CLIENT_LOGIN, &CMainFrame::OnClientLogin)
 	ON_WM_CLOSE()
 	ON_WM_TIMER()
+	ON_COMMAND(ID_CLIENT_COLLECTCHARTDATA, &CMainFrame::OnClientCollectchartdata)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -178,6 +181,8 @@ void CMainFrame::ClearAllResources()
 	SmGlobal::DestroyInstance();
 	SmTimeSeriesServiceManager::DestroyInstance();
 	SmLogManager::DestroyInstance();
+	SmUserManager::DestroyInstance();
+	SmServerRequestManager::DestroyInstance();
 }
 
 void CMainFrame::StartProcess()
@@ -304,4 +309,10 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 	datRcvr->ExecNext();
 
 	CMDIFrameWnd::OnTimer(nIDEvent);
+}
+
+
+void CMainFrame::OnClientCollectchartdata()
+{
+	SmServerRequestManager::GetInstance()->GetRecentChartData();
 }

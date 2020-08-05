@@ -302,6 +302,7 @@
     <ClInclude Include="Task\SmCallbackManager.h" />
     <ClInclude Include="Task\SmRealtimeHogaManager.h" />
     <ClInclude Include="Task\SmRealtimeQuoteManager.h" />
+    <ClInclude Include="Task\SmServerRequestManager.h" />
     <ClInclude Include="Task\ViServerDataReceiver.h" />
     <ClInclude Include="Task\VtProgressDlg.h" />
     <ClInclude Include="Timer\cpptime.h" />
@@ -477,6 +478,7 @@
     <ClCompile Include="Task\SmCallbackManager.cpp" />
     <ClCompile Include="Task\SmRealtimeHogaManager.cpp" />
     <ClCompile Include="Task\SmRealtimeQuoteManager.cpp" />
+    <ClCompile Include="Task\SmServerRequestManager.cpp" />
     <ClCompile Include="Task\ViServerDataReceiver.cpp" />
     <ClCompile Include="Task\VtProgressDlg.cpp" />
     <ClCompile Include="Time\tz.cpp">
