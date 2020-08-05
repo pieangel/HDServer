@@ -43,6 +43,8 @@
 #include "Log/SmLogManager.h"
 #include "User/SmUserManager.h"
 #include "Task/SmServerRequestManager.h"
+#include "Ai/SmAIIndicatorManager.h"
+#include "Ai/SmCorrelationManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -183,6 +185,8 @@ void CMainFrame::ClearAllResources()
 	SmLogManager::DestroyInstance();
 	SmUserManager::DestroyInstance();
 	SmServerRequestManager::DestroyInstance();
+	SmCorrelationManager::DestroyInstance();
+	SmAIIndicatorManager::DestroyInstance();
 }
 
 void CMainFrame::StartProcess()

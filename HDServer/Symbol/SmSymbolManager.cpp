@@ -105,27 +105,27 @@ void SmSymbolManager::StartCollectData()
 
 void SmSymbolManager::OnTimer()
 {
-	for (auto it = _ChartSymbolVector.begin(); it != _ChartSymbolVector.end(); ++it) {
-		std::vector<int> date_time = SmUtil::GetLocalDateTime();
-		int cur_hour = date_time[3];
-		int cur_min = date_time[4];
-		std::shared_ptr<SmSymbol> symbol = *it;
-
-
-		int prev_hour = cur_hour;
-		int prev_min = cur_min - 1;
-		if (prev_min < 0) {
-			prev_hour = prev_hour - 1;
-			prev_min += 60;
-		}
-
-		std::string prev_index = SmUtil::Format("%02d%02d", prev_hour, prev_min);
-		std::string cur_index = SmUtil::Format("%02d%02d", cur_hour, cur_min);
-		// 과거봉의 차트 데이터를 만든다.
-		symbol->MakePrevChartDataByTimer(cur_index);
-		// 현재 봉의 차트 데이터를 만든다.
-		symbol->MakeCurrChartDataByTimer(cur_index);
-	}
+// 	for (auto it = _ChartSymbolVector.begin(); it != _ChartSymbolVector.end(); ++it) {
+// 		std::vector<int> date_time = SmUtil::GetLocalDateTime();
+// 		int cur_hour = date_time[3];
+// 		int cur_min = date_time[4];
+// 		std::shared_ptr<SmSymbol> symbol = *it;
+// 
+// 
+// 		int prev_hour = cur_hour;
+// 		int prev_min = cur_min - 1;
+// 		if (prev_min < 0) {
+// 			prev_hour = prev_hour - 1;
+// 			prev_min += 60;
+// 		}
+// 
+// 		std::string prev_index = SmUtil::Format("%02d%02d", prev_hour, prev_min);
+// 		std::string cur_index = SmUtil::Format("%02d%02d", cur_hour, cur_min);
+// 		// 과거봉의 차트 데이터를 만든다.
+// 		symbol->MakePrevChartDataByTimer(cur_index);
+// 		// 현재 봉의 차트 데이터를 만든다.
+// 		symbol->MakeCurrChartDataByTimer(cur_index);
+// 	}
 }
 
 void SmSymbolManager::StartTimer()

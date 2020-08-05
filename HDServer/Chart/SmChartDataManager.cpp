@@ -8,6 +8,9 @@
 #include <thread>         // std::this_thread::sleep_for
 #include <chrono>         // std::chrono::seconds
 #include "../HDCtrl/HdClient.h"
+#include "../Util/SmUtil.h"
+#include <chrono>
+using namespace std::chrono;
 
 SmChartDataManager::SmChartDataManager()
 {
@@ -40,6 +43,7 @@ void SmChartDataManager::AddChartData(std::shared_ptr<SmChartData> chart_data)
 	auto it = _ChartDataMap.find(chart_data->GetDataKey());
 	if (it == _ChartDataMap.end()) {
 		_ChartDataMap[chart_data->GetDataKey()] = chart_data;
+		//CreateTimer(chart_data);
 		std::shared_ptr<SmSymbol> symbol = SmSymbolManager::GetInstance()->FindSymbol(chart_data->SymbolCode());
 		// 심볼에 차트 데이터를 추가해 준다. 
 		// 종가 업데이트를 위해서 꼭 필요하다.
@@ -58,6 +62,7 @@ std::shared_ptr<SmChartData> SmChartDataManager::AddChartData(SmChartDataRequest
 		chartData->ChartType(data_req.chartType);
 		chartData->Cycle(data_req.cycle);
 		_ChartDataMap[data_req.GetDataKey()] = chartData;
+		//CreateTimer(chartData);
 		std::shared_ptr<SmSymbol> symbol = SmSymbolManager::GetInstance()->FindSymbol(data_req.symbolCode);
 		// 심볼에 차트 데이터를 추가해 준다. 
 		// 종가 업데이트를 위해서 꼭 필요하다.
@@ -78,7 +83,7 @@ std::shared_ptr<SmChartData> SmChartDataManager::AddChartData(SmChartDataItem da
 		chartData->ChartType(data_item.chartType);
 		chartData->Cycle(data_item.cycle);
 		_ChartDataMap[data_item.GetDataKey()] = chartData;
-
+		//CreateTimer(chartData);
 		std::shared_ptr<SmSymbol> symbol = SmSymbolManager::GetInstance()->FindSymbol(data_item.symbolCode);
 		// 심볼에 차트 데이터를 추가해 준다. 
 		// 종가 업데이트를 위해서 꼭 필요하다.
@@ -99,6 +104,7 @@ std::shared_ptr<SmChartData> SmChartDataManager::AddChartData(std::string symbol
 		chartData->SymbolCode(symbol_code);
 		chartData->ChartType((SmChartType)chart_type);
 		chartData->Cycle(cycle);
+		//CreateTimer(chartData);
 		_ChartDataMap[data_key] = chartData;
 
 		std::shared_ptr<SmSymbol> symbol = SmSymbolManager::GetInstance()->FindSymbol(symbol_code);
@@ -185,10 +191,7 @@ void SmChartDataManager::StopThread()
 
 void SmChartDataManager::RequestChartData(SmChartDataRequest&& req)
 {
-	// 쓰레드로 바로 처리해 버린다.
-	//auto function = std::bind(&SmChartDataManager::ProcessChartData, std::ref(*this), req);
-	//_Pool->submit(function);
-	ProcessChartData(req);
+	AddTask(std::move(req));
 }
 
 void SmChartDataManager::ProcessTask()
@@ -232,15 +235,18 @@ void SmChartDataManager::ProcessTask()
 
 void SmChartDataManager::ExecuteTask(SmChartDataRequest&& req)
 {
+	// 일데이터는 상품 코드를 따로 필요로 한다.
+	if (req.chartType == SmChartType::DAY) {
+		std::shared_ptr<SmSymbol> symbol = SmSymbolManager::GetInstance()->FindSymbol(req.symbolCode);
+		if (symbol) {
+			req.product_code = symbol->CategoryCode();
+		}
+	}
+	// 차트데이터 등록해 준다.
 	std::shared_ptr<SmChartData> chart_data = SmChartDataManager::GetInstance()->AddChartData(req.symbolCode, (int)req.chartType, req.cycle);
-	size_t data_count = chart_data->GetDataCount();
-	// 데이터가 없으면 증권사 서버에 요청을 한다.
-	if (data_count == 0) {
-		SmMongoDBManager::GetInstance()->SaveChartDataRequest(req);
-		// 데이터베이스에서 차트데이터를 보낸다.
-		SmMongoDBManager::GetInstance()->LoadChartData(req);
-		// 여기서 차트 사이클 데이터를 요청한다.
-		SmTimeSeriesServiceManager::GetInstance()->ResendChartCycleDataRequest(req);
+	// 데이터가 없으면 서버에 요청을 한다. 그리고 사이클 데이터인 경우 무조건 요청을 한다.
+	if (!chart_data->Received() || req.reqType == SmChartDataReqestType::CYCLE) {
+		HdClient::GetInstance()->GetChartData(req);
 	}
 	else { // 데이터가 있으면 바로 보낸다.
 		SmTimeSeriesServiceManager::GetInstance()->SendChartData(req.session_id, chart_data);
@@ -263,8 +269,8 @@ bool SmChartDataManager::ExecuteTask(std::array<SmChartDataRequest, ChartArraySi
 
 	for (auto it = request_set.begin(); it != request_set.end(); ++it) {
 		SmChartDataRequest item = it->second;
-		//SmHdClient::GetInstance()->GetChartData(item);
-		//std::this_thread::sleep_for(std::chrono::milliseconds(700));
+		HdClient::GetInstance()->GetChartData(item);
+		std::this_thread::sleep_for(std::chrono::milliseconds(700));
 	}
 
 	return true;
@@ -281,16 +287,23 @@ void SmChartDataManager::ProcessChartData(SmChartDataRequest& req)
 	}
 	// 차트데이터 등록해 준다.
 	std::shared_ptr<SmChartData> chart_data = SmChartDataManager::GetInstance()->AddChartData(req.symbolCode, (int)req.chartType, req.cycle);
-	// 데이터가 없으면 데이터베이스에 요청을 한다.
-	if (!chart_data->Received()) {
-		SmMongoDBManager::GetInstance()->SaveChartDataRequest(req);
-		// 데이터베이스에서 차트데이터를 보낸다.
-		SmMongoDBManager::GetInstance()->LoadChartData(req);
-		// 여기서 차트 사이클 데이터를 요청한다.
-		SmTimeSeriesServiceManager::GetInstance()->ResendChartCycleDataRequest(req);
+	// 데이터가 없으면 서버에 요청을 한다. 그리고 사이클 데이터인 경우 무조건 요청을 한다.
+	if (!chart_data->Received() || req.reqType == SmChartDataReqestType::CYCLE) {
+		HdClient::GetInstance()->GetChartData(req);
 	}
 	else { // 데이터가 있으면 바로 보낸다.
 		SmTimeSeriesServiceManager::GetInstance()->SendChartData(req.session_id, chart_data);
 	}
+}
+
+void SmChartDataManager::CreateTimer(std::shared_ptr<SmChartData> chart_data)
+{
+	std::vector<int> date_time = SmUtil::GetLocalDateTime();
+	int minMod = date_time[4] % chart_data->Cycle();
+	int waitTime = chart_data->Cycle() * 60 - (minMod * 60 + date_time[5]);
+	// Add to the timer.
+	auto id = _Timer.add(seconds(waitTime), std::bind(&SmChartData::OnTimer, chart_data), seconds(chart_data->Cycle() * 60));
+	// Add to the request map.
+	_TimerMap[chart_data->GetDataKey()] = id;
 }
 

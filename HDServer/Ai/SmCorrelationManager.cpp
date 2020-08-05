@@ -17,6 +17,7 @@
 #include "../Database/SmMongoDBManager.h"
 #include <array>
 #include "../Service/SmProtocolManager.h"
+#include "../Log/loguru.hpp"
 
 double suma(std::vector<double> a)
 {
@@ -298,6 +299,8 @@ int SmCorrelationManager::CheckCompositeMa(std::shared_ptr<SmChartData> chart_da
 
 	int signal = 0;
 
+	try {
+
 	// 종가가 120이평보다 클 때
 	if (close_array.back() > ma120[ma120.size() - 120]) {
 		// 종가가 20, 40, 60 이평보다 모두 작을 때 매도
@@ -345,6 +348,14 @@ int SmCorrelationManager::CheckCompositeMa(std::shared_ptr<SmChartData> chart_da
 	CString msg;
 	msg.Format("CheckCompositeSma symbol %s, cycle = %d, result = %d\n", chart_data->SymbolCode().c_str(), chart_data->Cycle(), signal);
 	TRACE(msg);
+
+	}
+	catch (std::exception& e) {
+		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+	}
+	catch (...) {
+		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+	}
 	
 	return signal;
 }

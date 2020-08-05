@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 #include <array>
+#include <mutex>
 class SmChartData
 {
 private:
@@ -25,9 +26,10 @@ private:
 	void GetChartDataFromServer();
 	void GetCyclicDataFromServer();
 	size_t _DataQueueSize = ChartDataSize;
-	size_t _CycleDataSize = 3;
+	size_t _CycleDataSize = 2;
 	// 등록된 사용자들에게 차트 정기 데이터를 보내준다.
 	void SendCyclicChartDataToUsers();
+	std::mutex _mutex;
 public:
 	std::vector<double> GetClose();
 	std::vector<double> GetOpen();
@@ -39,12 +41,7 @@ public:
 	}
 	void AddChartData(SmChartDataItem&& data);
 	void AddData(SmChartDataItem& data_item);
-// 	std::list<SmChartDataItem>& GetDataItemList() {
-// 		return _DataItemList;
-// 	}
-// 	size_t GetChartDataCount() {
-// 		return _DataItemList.size();
-// 	}
+
 
 	std::map<std::string, SmChartDataItem>& GetDataItemList() {
 		return _DataMap;
@@ -106,5 +103,8 @@ public:
 	void Received(bool val) { _Received = val; }
 
 	SmChartDataItem* GetChartDataItem(std::string date_time);
+	// 사이클 데이터를 서버로 전송한다.
+	static void SendCycleChartData(SmChartDataItem item);
+	static void SendNormalChartData(SmChartDataItem item, int session_id);
 };
 

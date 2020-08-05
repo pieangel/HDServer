@@ -228,7 +228,7 @@ bool SmRealtimeQuoteManager::ExecuteTask(std::array<SmQuoteData, QuoteArraySize>
 
 		CString msg;
 		msg.Format(_T(" SmRealtimeQuoteManager symbol_code = %s, sign = %s\n"), item.symbol_code.c_str(), item.sign.c_str());
-		TRACE(msg);
+		//TRACE(msg);
 
 		// 손절, 익절, 스탑 주문을 체크한다.
 		SmCallbackManager::GetInstance()->OnQuoteEvent(sym.get());

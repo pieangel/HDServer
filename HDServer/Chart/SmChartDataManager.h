@@ -8,6 +8,8 @@
 #include <thread>
 #include <array>
 #include "ThreadPool.h"
+#include "../Timer/cpptime.h"
+
 using namespace code_machina;
 const int ChartArraySize = 100;
 
@@ -38,6 +40,7 @@ public:
 	bool Enable() const { return _Enable; }
 	void Enable(bool val) { _Enable = val; }
 	void RequestChartData(SmChartDataRequest&& req);
+	void CreateTimer(std::shared_ptr<SmChartData> chart_data);
 private:
 	std::map<std::string, std::shared_ptr<SmChartData>> _ChartDataMap;
 
@@ -53,5 +56,10 @@ private:
 
 	ThreadPool* _Pool = nullptr;
 	void ProcessChartData(SmChartDataRequest& req);
+
+	// 차트데이터를 주기적으로 받기 위한 타이머 맵
+	std::map<std::string, CppTime::timer_id> _TimerMap;
+	// 타이머 생성을 위한 타이머 객체
+	CppTime::Timer _Timer;
 };
 

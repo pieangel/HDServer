@@ -276,7 +276,7 @@ void SmSymbol::MakeCurrChartDataByTimer(std::string cur_hour_min)
 
 				CString msg;
 				msg.Format(_T("MakeCurrChartDataByTimer ::code = %s, cycle = %d, date = %s, t = %s, o = %d, h = %d, l = %d, c = %d, v = %d\n"), data.symbolCode.c_str(), data.cycle, data.date.c_str(), data.time.c_str(), data.o, data.h, data.l, data.c, data.v);
-				TRACE(msg);
+				//TRACE(msg);
 			}
 		}
 
@@ -323,7 +323,7 @@ void SmSymbol::MakePrevChartDataByTimer(std::string cur_hour_min)
 
 		CString msg;
 		msg.Format("symbolcode = %s, starthour = %d, startmin = %d, cur_hour = %d, cur_min = %d, total_min_diff = %d\n", SymbolCode().c_str(), StartHour(), StartMin(), cur_hour, cur_min, total_min_diff);
-		TRACE(msg);
+		//TRACE(msg);
 
 		std::vector<int> cycle_vector;
 		cycle_vector.push_back(1);
@@ -479,14 +479,14 @@ void SmSymbol::UpdateMinData(SmQuoteData tick_data)
 
 					CString msg;
 					msg.Format(_T("UpdateMinData ::code = %s, cycle = %d, date = %s, t = %s, o = %d, h = %d, l = %d, c = %d, v = %d\n"), data.symbolCode.c_str(), data.cycle, data.date.c_str(), data.time.c_str(), data.o, data.h, data.l, data.c, data.v);
-					TRACE(msg);
+					//TRACE(msg);
 				}
 				else {
 					chart_data = chartDataMgr->AddChartData(data);
 					chart_data->AddChartData(std::move(data));
 					CString msg;
 					msg.Format(_T("UpdateMinData ::code = %s, cycle = %d, date = %s, t = %s, o = %d, h = %d, l = %d, c = %d, v = %d\n"), data.symbolCode.c_str(), data.cycle, data.date.c_str(), data.time.c_str(), data.o, data.h, data.l, data.c, data.v);
-					TRACE(msg);
+					//TRACE(msg);
 				}
 			}
 		}
@@ -675,7 +675,7 @@ void SmSymbol::MakePrevChartData(int total_min_diff, std::string symbol_code, st
 			std::string key = it->first;
 			CString msg;
 			msg.Format(_T("MakePrevChartData for time = %s\n"), key.c_str());
-			TRACE(msg);
+			//TRACE(msg);
 
 			SmChartDataItem& cur_data = it->second;
 
@@ -715,7 +715,7 @@ void SmSymbol::MakePrevChartData(int total_min_diff, std::string symbol_code, st
 
 			CString msg;
 			msg.Format(_T("MakePrevChartData ::code = %s, cycle = %d, date = %s, t = %s, o = %d, h = %d, l = %d, c = %d, v = %d\n"), data.symbolCode.c_str(), data.cycle, data.date.c_str(), data.time.c_str(), data.o, data.h, data.l, data.c, data.v);
-			TRACE(msg);
+			//TRACE(msg);
 		}
 		else {
 			SendCycleChartData(data);
@@ -723,7 +723,7 @@ void SmSymbol::MakePrevChartData(int total_min_diff, std::string symbol_code, st
 			chart_data->AddChartData(std::move(data));
 			CString msg;
 			msg.Format(_T("MakePrevChartData ::code = %s, cycle = %d, date = %s, t = %s, o = %d, h = %d, l = %d, c = %d, v = %d\n"), data.symbolCode.c_str(), data.cycle, data.date.c_str(), data.time.c_str(), data.o, data.h, data.l, data.c, data.v);
-			TRACE(msg);
+			//TRACE(msg);
 		}
 
 	}
@@ -754,6 +754,6 @@ void SmSymbol::SendCycleChartData(SmChartDataItem item)
 	std::string content = send_object.dump();
 	SmGlobal* global = SmGlobal::GetInstance();
 	std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
-	sessMgr->send(content);
+	//sessMgr->send(content);
 }
 

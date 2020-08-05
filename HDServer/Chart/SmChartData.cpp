@@ -7,6 +7,10 @@
 #include "../Util/SmUtil.h"
 #include "../Util/VtStringUtil.h"
 #include "../Service/SmServiceDefine.h"
+#include "../HDCtrl/HdClient.h"
+#include "SmChartDataManager.h"
+#include "../Global/SmGlobal.h"
+#include "../Server/SmSessionManager.h"
 
 using namespace nlohmann;
 void SmChartData::GetChartDataFromDB()
@@ -54,8 +58,9 @@ void SmChartData::GetChartDataFromServer()
 	req.cycle = _Cycle;
 	req.count = _DataQueueSize;
 	req.next = 0;
-	//SmHdClient* client = SmHdClient::GetInstance();
+	//HdClient* client = HdClient::GetInstance();
 	//client->GetChartData(req);
+	SmChartDataManager::GetInstance()->AddTask(std::move(req));
 }
 
 void SmChartData::GetCyclicDataFromServer()
@@ -67,8 +72,9 @@ void SmChartData::GetCyclicDataFromServer()
 	req.cycle = _Cycle;
 	req.count = _CycleDataSize;
 	req.next = 0;
-	//SmHdClient* client = SmHdClient::GetInstance();
+	//HdClient* client = HdClient::GetInstance();
 	//client->GetChartData(req);
+	SmChartDataManager::GetInstance()->AddTask(std::move(req));
 }
 
 void SmChartData::SendCyclicChartDataToUsers()
@@ -164,27 +170,51 @@ std::vector<double> SmChartData::GetVolume()
 	return data_list;
 }
 
-void SmChartData::AddChartData(SmChartDataItem&& data)
+void SmChartData::AddChartData(SmChartDataItem&& data_item)
 {
-	std::string date_time;
-	date_time.append(data.date);
-	date_time.append(data.time);
-	_DataMap[date_time] = data;
+	std::lock_guard<std::mutex> lock(_mutex);
 
-	// 일정한 갯수가 넘어가면 이전 데이터는 제거해 준다.
-	if (_DataMap.size() > 3) {
-		auto it = _DataMap.begin();
-		_DataMap.erase(it);
+	std::string date_time;
+	date_time.append(data_item.date);
+	date_time.append(data_item.time);
+
+	try
+	{
+		auto it = _DataMap.find(date_time);
+		if (it != _DataMap.end()) {
+			// 있으면 업데이트 한다.
+			SmChartDataItem& data = it->second;
+			data.c = data_item.c;
+			data.o = data_item.o;
+			data.h = data_item.h;
+			data.l = data_item.l;
+			data.v = data_item.v;
+			return;
+		}
+		// 없으면 새로 추가한다.
+		_DataMap.insert(std::make_pair(data_item.date_time, data_item));
+
+		size_t count = _DataMap.size();
+		if (count > _DataQueueSize) {
+			// 큐의 크기를 넘어서면 맨 과거 데이터를 제거해 준다.
+			auto it = _DataMap.begin();
+			_DataMap.erase(it);
+		}
+	}
+	catch (std::exception e) {
+		std::string error;
+		error = e.what();
 	}
 }
 
 void SmChartData::AddData(SmChartDataItem& data_item)
 {
-	
+	std::lock_guard<std::mutex> lock(_mutex);
 	try
 	{
 		auto it = _DataMap.find(data_item.date_time);
 		if (it != _DataMap.end()) {
+			// 이미 있으면 업데이트 한다.
 			SmChartDataItem& data = it->second;
 			data.c = data_item.c;
 			data.o = data_item.o;
@@ -247,6 +277,8 @@ void SmChartData::OnChartDataUpdated()
 
 void SmChartData::PushChartDataItemToBack(SmChartDataItem data)
 {
+	std::lock_guard<std::mutex> lock(_mutex);
+
 	CString msg;
 	
 
@@ -263,6 +295,8 @@ void SmChartData::PushChartDataItemToBack(SmChartDataItem data)
 
 void SmChartData::PushChartDataItemToFront(SmChartDataItem data)
 {
+	std::lock_guard<std::mutex> lock(_mutex);
+
 	CString msg;
 
 
@@ -385,4 +419,58 @@ SmChartDataItem* SmChartData::GetChartDataItem(std::string date_time)
 		return &it->second;
 
 	return nullptr;
+}
+
+void SmChartData::SendCycleChartData(SmChartDataItem item)
+{
+	json send_object;
+	send_object["res_id"] = SmProtocol::res_chart_cycle_data;
+	send_object["symbol_code"] = item.symbolCode;
+	send_object["chart_type"] = item.chartType;
+	send_object["cycle"] = item.cycle;
+	send_object["date"] = item.date;
+	send_object["time"] = item.time;
+	send_object["date_time"] = item.date + item.time;
+	send_object["o"] = item.o;
+	send_object["h"] = item.h;
+	send_object["l"] = item.l;
+	send_object["c"] = item.c;
+	send_object["v"] = item.v;
+
+	std::string content = send_object.dump();
+	SmGlobal* global = SmGlobal::GetInstance();
+	std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
+	sessMgr->send(content);
+}
+
+void SmChartData::SendNormalChartData(SmChartDataItem item, int session_id)
+{
+	json send_object;
+	send_object["res_id"] = SmProtocol::res_chart_data_onebyone;
+	send_object["total_count"] = item.total_count;
+	send_object["current_count"] = item.current_count;
+	send_object["data_key"] = item.GetDataKey();
+	send_object["symbol_code"] = item.symbolCode;
+	send_object["chart_type"] = item.chartType;
+	send_object["cycle"] = item.cycle;
+	send_object["date_time"] = item.date_time;
+	send_object["o"] = item.o;
+	send_object["h"] = item.h;
+	send_object["l"] = item.l;
+	send_object["c"] = item.c;
+	send_object["v"] = item.v;
+	std::string values;
+	values.append(std::to_string(item.o));
+	values.append(",");
+	values.append(std::to_string(item.h));
+	values.append(",");
+	values.append(std::to_string(item.l));
+	values.append(",");
+	values.append(std::to_string(item.c));
+	send_object["values"] = values;
+
+	std::string content = send_object.dump();
+	SmGlobal* global = SmGlobal::GetInstance();
+	std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
+	sessMgr->send(session_id, content);
 }

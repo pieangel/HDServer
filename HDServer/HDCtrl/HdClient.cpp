@@ -50,53 +50,63 @@ HdClient::~HdClient()
 
 int HdClient::GetChartDataShortCycle(SmChartDataRequest req)
 {
+	int nRqID = -1;
+	
 	CHDFCommAgent& m_CommAgent = _HdCtrl->GetHdAgent();
+	try {
+		std::string temp;
+		std::string reqString;
+		// 종목 코드 32 자리
+		temp = VtStringUtil::PadRight(req.symbolCode, ' ', 32);
+		reqString.append(temp);
 
-	std::string temp;
-	std::string reqString;
-	// 종목 코드 32 자리
-	temp = VtStringUtil::PadRight(req.symbolCode, ' ', 32);
-	reqString.append(temp);
+		std::string str = VtStringUtil::getCurentDate();
+		CString msg;
+		//msg.Format("%s \n", str.c_str());
+		//TRACE(msg);
+		reqString.append(str);
+		reqString.append(str);
+		reqString.append(_T("9999999999"));
 
-	std::string str = VtStringUtil::getCurentDate();
-	CString msg;
-	//msg.Format("%s \n", str.c_str());
-	//TRACE(msg);
-	reqString.append(str);
-	reqString.append(str);
-	reqString.append(_T("9999999999"));
+		if (req.next == 0)
+			reqString.append(_T("0"));
+		else
+			reqString.append(_T("1"));
 
-	if (req.next == 0)
-		reqString.append(_T("0"));
-	else
-		reqString.append(_T("1"));
+		if (req.chartType == SmChartType::TICK)
+			reqString.append("1");
+		else if (req.chartType == SmChartType::MIN)
+			reqString.append("2");
+		else if (req.chartType == SmChartType::DAY)
+			reqString.append("3");
+		else if (req.chartType == SmChartType::WEEK)
+			reqString.append("4");
+		else if (req.chartType == SmChartType::MON)
+			reqString.append("5");
+		else
+			reqString.append("2");
 
-	if (req.chartType == SmChartType::TICK)
-		reqString.append("1");
-	else if (req.chartType == SmChartType::MIN)
-		reqString.append("2");
-	else if (req.chartType == SmChartType::DAY)
-		reqString.append("3");
-	else if (req.chartType == SmChartType::WEEK)
-		reqString.append("4");
-	else if (req.chartType == SmChartType::MON)
-		reqString.append("5");
-	else
-		reqString.append("2");
+		temp = VtStringUtil::PadLeft(req.cycle, '0', 2);
+		reqString.append(temp);
 
-	temp = VtStringUtil::PadLeft(req.cycle, '0', 2);
-	reqString.append(temp);
+		temp = VtStringUtil::PadLeft(req.count, '0', 5);
+		reqString.append(temp);
 
-	temp = VtStringUtil::PadLeft(req.count, '0', 5);
-	reqString.append(temp);
+		CString sInput = reqString.c_str();
+		CString strNextKey = _T("");
 
-	CString sInput = reqString.c_str();
-	CString strNextKey = _T("");
+		CString sReqFidInput = "000001002003004005006007008009010011012013014015";
+		nRqID = m_CommAgent.CommFIDRqData(DefAbChartData, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
 
-	CString sReqFidInput = "000001002003004005006007008009010011012013014015";
-	int nRqID = m_CommAgent.CommFIDRqData(DefAbChartData, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+		_ChartDataReqMap[nRqID] = req;
+	}
+	catch (std::exception& e) {
+		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+	}
+	catch (...) {
+		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+	}
 
-	_ChartDataReqMap[nRqID] = req;
 	return nRqID;
 }
 
@@ -234,6 +244,11 @@ int HdClient::GetChartData(SmChartDataRequest req)
 {
 	if (req.GetDataKey().length() < 8)
 		return -1;
+
+	CString msg;
+	msg.Format("GetChartData :: DataKey = %s, count = %d\n", req.GetDataKey().c_str(), req.count);
+	TRACE(msg);
+
 	if (std::isdigit(req.symbolCode.at(2))) {
 		if (req.symbolCode.length() < 8)
 			return -1;
@@ -1434,6 +1449,7 @@ int HdClient::GetAbChartData(SmTaskArg& arg)
 
 void HdClient::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
 {
+	try {
 	CHDFCommAgent& m_CommAgent = _HdCtrl->GetHdAgent();
 
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
@@ -1450,7 +1466,6 @@ void HdClient::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
 	std::shared_ptr<SmChartData> chart_data = chartDataMgr->AddChartData(req);
 	int total_count = nRepeatCnt;
 	int current_count = 1;
-	std::vector<SmChartDataItem> chart_vec;
 	// 가장 최근것이 가장 먼저 온다. 따라서 가장 과거의 데이터를 먼저 가져온다.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
@@ -1466,7 +1481,7 @@ void HdClient::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
 			continue;
 
 		msg.Format(_T("OnRcvdAbroadChartData ::code = %s, index = %d, date = %s, t = %s, o = %s, h = %s, l = %s, c = %s, v = %s\n"), req.symbolCode.c_str(), i, strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
-		TRACE(msg);
+		//TRACE(msg);
 
 		SmChartDataItem data;
 		data.symbolCode = req.symbolCode;
@@ -1474,20 +1489,56 @@ void HdClient::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
 		data.cycle = req.cycle;
 		data.date = strDate.Trim();
 		data.time = strTime.Trim();
+		data.date_time = data.date + data.time;
 		data.h = _ttoi(strHigh);
 		data.l = _ttoi(strLow);
 		data.o = _ttoi(strOpen);
 		data.c = _ttoi(strClose);
 		data.v = _ttoi(strVol);
+		data.total_count = total_count;
+		data.current_count = current_count;
 
-		chart_vec.push_back(data);
+		// 차트데이터에 추가한다.
+		std::shared_ptr<SmChartData> chart_data = SmChartDataManager::GetInstance()->AddChartData(data);
+		chart_data->AddData(data);
+
+		// 전체 갯수와 현재 갯수가 일치하면 차트 데이터를 받았다고 표시한다.
+		if (total_count == current_count) {
+			chart_data->Received(true);
+			// 주기 데이터 수집을 시작한다.
+			SmChartDataManager::GetInstance()->CreateTimer(chart_data);
+		}
+		current_count++;
+
+		if (req.reqType == SmChartDataReqestType::CYCLE) {
+			// 최소 한번 서버로 부터 받은 차트만 보낸다.
+			if (chart_data->Received()) {
+				SmChartData::SendCycleChartData(data);
+			}
+		}
+		else {
+			SmChartData::SendNormalChartData(data, req.session_id);
+		}
+
 	}
 
+	// 차트 데이터 수신 요청 목록에서 제거한다.
+	_ChartDataReqMap.erase(it);
+
 	OnTaskComplete(nRqID);
+
+	}
+	catch (std::exception& e) {
+		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+	}
+	catch (...) {
+		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+	}
 }
 
 void HdClient::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
 {
+	try {
 	CHDFCommAgent& m_CommAgent = _HdCtrl->GetHdAgent();
 
 	CString symbol_code = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
@@ -1540,10 +1591,44 @@ void HdClient::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
 		data.c = _ttoi(strClose);
 		data.v = _ttoi(strVol);
 
+
+		// 차트데이터에 추가한다.
+		std::shared_ptr<SmChartData> chart_data = SmChartDataManager::GetInstance()->AddChartData(data);
+		chart_data->AddData(data);
+
+		// 전체 갯수와 현재 갯수가 일치하면 차트 데이터를 받았다고 표시한다.
+		if (total_count == current_count) {
+			chart_data->Received(true);
+			// 주기 데이터 수집을 시작한다.
+			SmChartDataManager::GetInstance()->CreateTimer(chart_data);
+		}
+		current_count++;
+
+		if (req.reqType == SmChartDataReqestType::CYCLE) {
+			// 최소 한번 서버로 부터 받은 차트만 보낸다.
+			if (chart_data->Received()) {
+				SmChartData::SendCycleChartData(data);
+			}
+		}
+		else {
+			SmChartData::SendNormalChartData(data, req.session_id);
+		}
+
 		chart_vec.push_back(data);
 	}
 
+	// 차트 데이터 수신 요청 목록에서 제거한다.
+	_ChartDataReqMap.erase(it);
+
 	OnTaskComplete(nRqID);
+
+	}
+	catch (std::exception& e) {
+		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+	}
+	catch (...) {
+		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+	}
 }
 // 
 // void HdClient::PutAbOrder(HdOrderRequest& request)
@@ -3148,8 +3233,29 @@ void HdClient::OnRcvdDomesticChartData(CString& sTrCode, LONG& nRqID)
 			data.c = _ttoi(strClose);
 			data.v = _ttoi(strVol);
 
-			// 차트데이터 아이템을 차트데이터에 더한다.
+
+			// 차트데이터에 추가한다.
+			std::shared_ptr<SmChartData> chart_data = SmChartDataManager::GetInstance()->AddChartData(data);
 			chart_data->AddData(data);
+
+			// 전체 갯수와 현재 갯수가 일치하면 차트 데이터를 받았다고 표시한다.
+			if (total_count == current_count) {
+				chart_data->Received(true);
+				// 주기 데이터 수집을 시작한다.
+				SmChartDataManager::GetInstance()->CreateTimer(chart_data);
+			}
+			current_count++;
+
+			if (req.reqType == SmChartDataReqestType::CYCLE) {
+				// 최소 한번 서버로 부터 받은 차트만 보낸다.
+				if (chart_data->Received()) {
+					SmChartData::SendCycleChartData(data);
+				}
+			}
+			else {
+				SmChartData::SendNormalChartData(data, req.session_id);
+			}
+
 		}
 
 		// 차트 데이터 수신 요청 목록에서 제거한다.

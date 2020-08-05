@@ -24,10 +24,11 @@ private:
 	int GetChartDataShortCycle(SmChartDataRequest req);
 	int GetChartDataLongCycle(SmChartDataRequest req);
 	int GetChartDataForDomestic(SmChartDataRequest req);
-	int GetChartData(SmChartDataRequest req);
 
 	bool _Enable = true;
 public:
+	int GetChartData(SmChartDataRequest req);
+
 	int Init();
 	int Login(std::string id, std::string pwd, std::string cert);
 	void OnAccountListReceived(CString& sTrCode, LONG& nRqID);
@@ -80,7 +81,7 @@ public:
 	int GetAbAccepted(SmTaskArg& arg);
 	void OnGetAbAccepted(CString& sTrCode, LONG& nRqID);
 
-	// 해외 차트데이터
+	// 국내/ 해외 차트데이터
 	int GetAbChartData(SmTaskArg& arg);
 	void OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID);
 	void OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID);
