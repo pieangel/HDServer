@@ -244,9 +244,12 @@ int HdClient::GetChartData(SmChartDataRequest req)
 {
 	if (req.GetDataKey().length() < 8)
 		return -1;
+	if (req.symbolCode.length() < 3)
+		return -1;
 
+	auto dt = VtStringUtil::GetCurrentDateTime();
 	CString msg;
-	msg.Format("GetChartData :: DataKey = %s, count = %d\n", req.GetDataKey().c_str(), req.count);
+	msg.Format("GetChartData :: DataKey = %s, time = %s, count = %d\n", req.GetDataKey().c_str(), dt.second.c_str(), req.count);
 	TRACE(msg);
 
 	if (std::isdigit(req.symbolCode.at(2))) {
@@ -1481,7 +1484,7 @@ void HdClient::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
 			continue;
 
 		msg.Format(_T("OnRcvdAbroadChartData ::code = %s, index = %d, date = %s, t = %s, o = %s, h = %s, l = %s, c = %s, v = %s\n"), req.symbolCode.c_str(), i, strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
-		//TRACE(msg);
+		TRACE(msg);
 
 		SmChartDataItem data;
 		data.symbolCode = req.symbolCode;
@@ -1520,6 +1523,10 @@ void HdClient::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
 			SmChartData::SendNormalChartData(data, req.session_id);
 		}
 
+	}
+
+	if (req.reqType == SmChartDataReqestType::FIRST) {
+		SmChartData::SendChartDataEnd(req.session_id);
 	}
 
 	// 차트 데이터 수신 요청 목록에서 제거한다.
@@ -1585,6 +1592,7 @@ void HdClient::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
 		data.cycle = req.cycle;
 		data.date = strDate.Trim();
 		data.time = strTime.Trim();
+		data.date_time = data.date + data.time;
 		data.h = _ttoi(strHigh);
 		data.l = _ttoi(strLow);
 		data.o = _ttoi(strOpen);
@@ -1615,6 +1623,10 @@ void HdClient::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
 		}
 
 		chart_vec.push_back(data);
+	}
+
+	if (req.reqType == SmChartDataReqestType::FIRST) {
+		SmChartData::SendChartDataEnd(req.session_id);
 	}
 
 	// 차트 데이터 수신 요청 목록에서 제거한다.
@@ -3051,7 +3063,7 @@ void HdClient::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 
 	CString msg;
 	msg.Format(_T(" OnRealFutureQuote code = %s, system_time = %s, \n 현재가 = %s\n"), strSymCode, strTime, strClose);
-	TRACE(msg);
+	//TRACE(msg);
 
 	int preday_ratio = _ttoi(strRatioToPreDay);
 	SmQuoteData quoteItem;
@@ -3256,6 +3268,10 @@ void HdClient::OnRcvdDomesticChartData(CString& sTrCode, LONG& nRqID)
 				SmChartData::SendNormalChartData(data, req.session_id);
 			}
 
+		}
+
+		if (req.reqType == SmChartDataReqestType::FIRST) {
+			SmChartData::SendChartDataEnd(req.session_id);
 		}
 
 		// 차트 데이터 수신 요청 목록에서 제거한다.

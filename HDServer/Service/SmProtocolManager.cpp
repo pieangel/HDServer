@@ -65,9 +65,10 @@ void SmProtocolManager::ParseMessage(std::string message, SmWebsocketSession* so
 
 	try {
 		auto json_object = json::parse(message);
-		json_object["session_id"] = socket->SessionID();
 
 		int req_id = json_object["req_id"];
+		json_object["session_id"] = socket->SessionID();
+
 		SmProtocol sm_protocol = [](int id) {
 			return (SmProtocol)id;
 		}(req_id);
@@ -791,6 +792,7 @@ void SmProtocolManager::OnReqMarketList(nlohmann::json& obj)
 		SmMarketManager* marketMgr = SmMarketManager::GetInstance();
 		int session_id = obj["session_id"];
 		marketMgr->SendMarketList(session_id);
+		marketMgr->SendMarketListEnd(session_id);
 	}
 	catch (std::exception e) {
 		std::string error = e.what();
@@ -803,6 +805,7 @@ void SmProtocolManager::OnReqSymbolListByCategory(nlohmann::json& obj)
 		SmMarketManager* marketMgr = SmMarketManager::GetInstance();
 		int session_id = obj["session_id"];
 		marketMgr->SendSymbolListByCategory(session_id);
+		marketMgr->SendSymbolListEnd(session_id);
 	}
 	catch (std::exception e) {
 		std::string error = e.what();

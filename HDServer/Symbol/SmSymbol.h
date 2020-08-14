@@ -138,13 +138,15 @@ private:
 	// 120틱 카운트
 	int tick_count_120 = -1;
 	int tick_count_300 = -1;
+	int tick_count_900 = -1;
 	std::string last_tick_time_120 = "";
 	std::string last_tick_time_300 = "";
+	std::string last_tick_time_900 = "";
 
 	void MakePrevChartData(int total_min_diff, std::string symbol_code, std::string prev_hour_min, std::string chart_hour_min, int cycle);
 	// 사이클 데이터를 서버로 전송한다.
 	void SendCycleChartData(SmChartDataItem item);
-
+	void GetCycleDataFromServer(int cycle);
 	std::map<std::string, std::shared_ptr<SmChartData>> _ChartDataMap;
 };
 

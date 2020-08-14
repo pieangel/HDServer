@@ -505,7 +505,18 @@ void SmSymbol::UpdateTickData(SmQuoteData tick_data)
 	try {
 		tick_count_120++;
 		tick_count_300++;
+		tick_count_900++;
+		if (tick_count_120 % 120 == 0) {
+			GetCycleDataFromServer(120);
+		}
+		if (tick_count_300 % 300 == 0) {
+			GetCycleDataFromServer(300);
+		}
+		if (tick_count_900 % 900 == 0) {
+			GetCycleDataFromServer(900);
+		}
 
+		/*
 		int close = std::stoi(tick_data.close);
 		SmChartDataManager* chartDataMgr = SmChartDataManager::GetInstance();
 		// 여기서 새로운 데이터를 만들고 완성된 봉을 보낸다.
@@ -618,6 +629,7 @@ void SmSymbol::UpdateTickData(SmQuoteData tick_data)
 				prev_data->v += std::stoi(tick_data.volume);
 			}
 		}
+		*/
 
 	}
 	catch (std::exception& e) {
@@ -755,5 +767,24 @@ void SmSymbol::SendCycleChartData(SmChartDataItem item)
 	SmGlobal* global = SmGlobal::GetInstance();
 	std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
 	//sessMgr->send(content);
+}
+
+void SmSymbol::GetCycleDataFromServer(int cycle)
+{
+	SmChartDataRequest req;
+	req.reqType = SmChartDataReqestType::CYCLE;
+	req.symbolCode = _SymbolCode;
+	req.chartType = SmChartType::TICK;
+	req.cycle = cycle;
+	req.count = 3;
+	req.next = 0;
+
+	SmChartDataManager* chartDataMgr = SmChartDataManager::GetInstance();
+	std::shared_ptr<SmChartData> chart_data = chartDataMgr->FindChartData(req.GetDataKey());
+	// 차트 데이터가 없거나 한번도 받지 않았다면 진행하지 않는다.
+	if (!chart_data || !chart_data->Received())
+		return;
+
+	SmChartDataManager::GetInstance()->AddTask(std::move(req));
 }
 

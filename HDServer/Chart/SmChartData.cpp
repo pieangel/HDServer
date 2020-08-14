@@ -412,6 +412,27 @@ void SmChartData::OnTimer()
 	GetCyclicDataFromServer();
 }
 
+void SmChartData::SendChartDataEnd(int session_id)
+{
+	json send_object;
+	send_object["res_id"] = SmProtocol::res_chart_data_end;
+	
+	std::string content = send_object.dump();
+	SmGlobal* global = SmGlobal::GetInstance();
+	std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
+	sessMgr->send(session_id, content);
+}
+
+void SmChartData::SendChartData(int session_id)
+{
+	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
+		SmChartDataItem& data = it->second;
+		SendNormalChartData(data, session_id);
+	}
+
+	SendChartDataEnd(session_id);
+}
+
 SmChartDataItem* SmChartData::GetChartDataItem(std::string date_time)
 {
 	auto it = _DataMap.find(date_time);
@@ -426,6 +447,7 @@ void SmChartData::SendCycleChartData(SmChartDataItem item)
 	json send_object;
 	send_object["res_id"] = SmProtocol::res_chart_cycle_data;
 	send_object["symbol_code"] = item.symbolCode;
+	send_object["data_key"] = item.GetDataKey();
 	send_object["chart_type"] = item.chartType;
 	send_object["cycle"] = item.cycle;
 	send_object["date"] = item.date;
@@ -448,27 +470,21 @@ void SmChartData::SendNormalChartData(SmChartDataItem item, int session_id)
 	json send_object;
 	send_object["res_id"] = SmProtocol::res_chart_data_onebyone;
 	send_object["total_count"] = item.total_count;
+	send_object["data_key"] = item.GetDataKey();
 	send_object["current_count"] = item.current_count;
 	send_object["data_key"] = item.GetDataKey();
 	send_object["symbol_code"] = item.symbolCode;
 	send_object["chart_type"] = item.chartType;
 	send_object["cycle"] = item.cycle;
 	send_object["date_time"] = item.date_time;
+	send_object["date"] = item.date;
+	send_object["time"] = item.time;
 	send_object["o"] = item.o;
 	send_object["h"] = item.h;
 	send_object["l"] = item.l;
 	send_object["c"] = item.c;
 	send_object["v"] = item.v;
-	std::string values;
-	values.append(std::to_string(item.o));
-	values.append(",");
-	values.append(std::to_string(item.h));
-	values.append(",");
-	values.append(std::to_string(item.l));
-	values.append(",");
-	values.append(std::to_string(item.c));
-	send_object["values"] = values;
-
+	
 	std::string content = send_object.dump();
 	SmGlobal* global = SmGlobal::GetInstance();
 	std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();

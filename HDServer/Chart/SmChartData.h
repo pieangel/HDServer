@@ -26,7 +26,7 @@ private:
 	void GetChartDataFromServer();
 	void GetCyclicDataFromServer();
 	size_t _DataQueueSize = ChartDataSize;
-	size_t _CycleDataSize = 2;
+	size_t _CycleDataSize = 3;
 	// 등록된 사용자들에게 차트 정기 데이터를 보내준다.
 	void SendCyclicChartDataToUsers();
 	std::mutex _mutex;
@@ -95,6 +95,8 @@ public:
 		key.append(std::to_string(cycle));
 		return key;
 	}
+	
+	void SendChartData(int session_id);
 	int DataQueueSize() const { return _DataQueueSize; }
 	void DataQueueSize(int val) { _DataQueueSize = val; }
 	size_t CycleDataSize() const { return _CycleDataSize; }
@@ -106,5 +108,6 @@ public:
 	// 사이클 데이터를 서버로 전송한다.
 	static void SendCycleChartData(SmChartDataItem item);
 	static void SendNormalChartData(SmChartDataItem item, int session_id);
+	static void SendChartDataEnd(int session_id);
 };
 

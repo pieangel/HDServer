@@ -233,7 +233,6 @@ void SmMarketManager::SendSymbolListByCategory(std::string user_id)
 void SmMarketManager::SendSymbolListByCategory(int session_id)
 {
 	try {
-		int s = 0;
 		for (size_t i = 0; i < _MarketList.size(); ++i) {
 			std::shared_ptr<SmMarket> market = _MarketList[i];
 			std::vector<std::shared_ptr<SmProduct>>& cat_list = market->GetCategoryList();
@@ -242,13 +241,9 @@ void SmMarketManager::SendSymbolListByCategory(int session_id)
 				std::vector<std::shared_ptr<SmSymbol>>& sym_list = cat->GetSymbolList();
 				for (size_t k = 0; k < sym_list.size(); ++k) {
 					SendSymbolMaster(session_id, sym_list[k]);
-					s++;
 				}
 			}
 		}
-
-
-		s = s + 1;
 	}
 	catch (std::exception& e) {
 		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
@@ -256,6 +251,26 @@ void SmMarketManager::SendSymbolListByCategory(int session_id)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+}
+
+void SmMarketManager::SendSymbolListEnd(int session_id)
+{
+	json send_object;
+	send_object["res_id"] = SmProtocol::res_symbol_list_end;
+	std::string content = send_object.dump();
+	SmGlobal* global = SmGlobal::GetInstance();
+	std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
+	sessMgr->send(session_id, content);
+}
+
+void SmMarketManager::SendMarketListEnd(int session_id)
+{
+	json send_object;
+	send_object["res_id"] = SmProtocol::res_market_list_end;
+	std::string content = send_object.dump();
+	SmGlobal* global = SmGlobal::GetInstance();
+	std::shared_ptr<SmSessionManager> sessMgr = global->GetSessionManager();
+	sessMgr->send(session_id, content);
 }
 
 int SmMarketManager::GetTotalCategoryCount()
@@ -666,10 +681,10 @@ void SmMarketManager::SendSymbolMaster(std::string user_id, std::shared_ptr<SmSy
 	send_object["res_id"] = SmProtocol::res_symbol_master;
 	send_object["total_symbol_count"] = GetTotalSymbolCount();
 	send_object["symbol_code"] = sym->SymbolCode();
-	send_object["category_index"] = sym->Index();
-	send_object["name_kr"] = SmUtfUtil::AnsiToUtf8((char*)sym->Name().c_str());
-	send_object["name_en"] = sym->NameEn().c_str();
-	send_object["category_code"] = sym->CategoryCode();
+	send_object["symbol_index"] = sym->Index();
+	send_object["symbol_name_kr"] = SmUtfUtil::AnsiToUtf8((char*)sym->Name().c_str());
+	send_object["symbol_name_en"] = sym->NameEn().c_str();
+	send_object["product_code"] = sym->CategoryCode();
 	send_object["market_name"] = SmUtfUtil::AnsiToUtf8((char*)sym->MarketName().c_str());
 	send_object["decimal"] = sym->Decimal();
 	send_object["contract_unit"] = sym->CtrUnit();
@@ -691,10 +706,10 @@ void SmMarketManager::SendSymbolMaster(int session_id, std::shared_ptr<SmSymbol>
 		send_object["res_id"] = SmProtocol::res_symbol_master;
 		send_object["total_symbol_count"] = GetTotalSymbolCount();
 		send_object["symbol_code"] = sym->SymbolCode();
-		send_object["category_index"] = sym->Index();
-		send_object["name_kr"] = SmUtfUtil::AnsiToUtf8((char*)sym->Name().c_str());
-		send_object["name_en"] = sym->NameEn().c_str();
-		send_object["category_code"] = sym->CategoryCode();
+		send_object["symbol_index"] = sym->Index();
+		send_object["symbol_name_kr"] = SmUtfUtil::AnsiToUtf8((char*)sym->Name().c_str());
+		send_object["symbol_name_en"] = sym->NameEn().c_str();
+		send_object["product_code"] = sym->CategoryCode();
 		send_object["market_name"] = SmUtfUtil::AnsiToUtf8((char*)sym->MarketName().c_str());
 		send_object["decimal"] = sym->Decimal();
 		send_object["contract_unit"] = sym->CtrUnit();

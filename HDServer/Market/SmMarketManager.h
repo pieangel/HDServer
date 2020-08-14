@@ -32,6 +32,8 @@ public:
 	void SendSymbolListByCategory(std::string user_id);
 	void SendMarketList(int session_id);
 	void SendSymbolListByCategory(int session_id);
+	void SendSymbolListEnd(int session_id);
+	void SendMarketListEnd(int session_id);
 	int GetTotalCategoryCount();
 	int GetTotalSymbolCount();
 	std::vector<std::shared_ptr<SmMarket>>& GetMarketList() {

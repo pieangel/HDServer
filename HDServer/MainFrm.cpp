@@ -45,6 +45,8 @@
 #include "Task/SmServerRequestManager.h"
 #include "Ai/SmAIIndicatorManager.h"
 #include "Ai/SmCorrelationManager.h"
+#include "Database/SmTimeSeriesDBManager.h"
+#include "Service/SmRealtimeSymbolServiceManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -187,6 +189,7 @@ void CMainFrame::ClearAllResources()
 	SmServerRequestManager::DestroyInstance();
 	SmCorrelationManager::DestroyInstance();
 	SmAIIndicatorManager::DestroyInstance();
+	SmRealtimeSymbolServiceManager::DestroyInstance();
 }
 
 void CMainFrame::StartProcess()

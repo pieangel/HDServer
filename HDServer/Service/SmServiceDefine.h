@@ -162,5 +162,11 @@ enum class SmProtocol {
 	// 상관관계값 요청
 	req_correlation,
 	// 상관관계값 응답
-	res_correlation
+	res_correlation,
+	// 마켓리스트 끝 표시
+	res_market_list_end,
+	// 심볼리스트 끝 표시
+	res_symbol_list_end,
+	// 차트 데이터 끝 표시
+	res_chart_data_end
 };

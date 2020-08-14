@@ -247,9 +247,10 @@ void SmChartDataManager::ExecuteTask(SmChartDataRequest&& req)
 	// 데이터가 없으면 서버에 요청을 한다. 그리고 사이클 데이터인 경우 무조건 요청을 한다.
 	if (!chart_data->Received() || req.reqType == SmChartDataReqestType::CYCLE) {
 		HdClient::GetInstance()->GetChartData(req);
+		std::this_thread::sleep_for(std::chrono::milliseconds(400));
 	}
 	else { // 데이터가 있으면 바로 보낸다.
-		SmTimeSeriesServiceManager::GetInstance()->SendChartData(req.session_id, chart_data);
+		chart_data->SendChartData(req.session_id);
 	}
 }
 
@@ -292,12 +293,20 @@ void SmChartDataManager::ProcessChartData(SmChartDataRequest& req)
 		HdClient::GetInstance()->GetChartData(req);
 	}
 	else { // 데이터가 있으면 바로 보낸다.
-		SmTimeSeriesServiceManager::GetInstance()->SendChartData(req.session_id, chart_data);
+		chart_data->SendChartData(req.session_id);
 	}
 }
 
 void SmChartDataManager::CreateTimer(std::shared_ptr<SmChartData> chart_data)
 {
+	auto it = _TimerMap.find(chart_data->GetDataKey());
+	if (it != _TimerMap.end())
+		return;
+
+	// 틱데이터는 처리하지 않는다. 
+	if (chart_data->ChartType() == SmChartType::TICK)
+		return;
+
 	std::vector<int> date_time = SmUtil::GetLocalDateTime();
 	int minMod = date_time[4] % chart_data->Cycle();
 	int waitTime = chart_data->Cycle() * 60 - (minMod * 60 + date_time[5]);
