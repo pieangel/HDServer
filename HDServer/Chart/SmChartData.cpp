@@ -212,6 +212,9 @@ void SmChartData::AddData(SmChartDataItem& data_item)
 	std::lock_guard<std::mutex> lock(_mutex);
 	try
 	{
+		if (data_item.date_time.length() == 0)
+			return;
+
 		auto it = _DataMap.find(data_item.date_time);
 		if (it != _DataMap.end()) {
 			// 이미 있으면 업데이트 한다.
@@ -237,6 +240,39 @@ void SmChartData::AddData(SmChartDataItem& data_item)
 		error = e.what();
 	}
 	
+}
+
+void SmChartData::UpdateData(SmChartDataItem& data_item)
+{
+	try {
+		if (data_item.date_time.length() == 0)
+			return;
+
+		auto it = _DataMap.end();
+		it--;
+		SmChartDataItem& last_item = it->second;
+		if (last_item.date_time.compare(data_item.date_time) > 0) {
+			_DataMap.erase(it);
+			// 기준이 되는 과거 데이터를 한번 더 보낸다.
+			SmChartData::SendCycleChartData(data_item);
+		}
+		else {
+			_DataMap.insert(std::make_pair(data_item.date_time, data_item));
+			// 실제 업데이트 된것을 보낸다.
+			SmChartData::SendCycleChartData(data_item);
+		}
+
+		size_t count = _DataMap.size();
+		if (count > _DataQueueSize) {
+			// 큐의 크기를 넘어서면 맨 과거 데이터를 제거해 준다.
+			auto it = _DataMap.begin();
+			_DataMap.erase(it);
+		}
+	}
+	catch (std::exception e) {
+		std::string error;
+		error = e.what();
+	}
 }
 
 std::pair<int, int> SmChartData::GetCycleByTimeDif()
@@ -412,10 +448,14 @@ void SmChartData::OnTimer()
 	GetCyclicDataFromServer();
 }
 
-void SmChartData::SendChartDataEnd(int session_id)
+void SmChartData::SendChartDataEnd(int session_id, std::shared_ptr<SmChartData> chart_data)
 {
+	if (!chart_data)
+		return;
+
 	json send_object;
 	send_object["res_id"] = SmProtocol::res_chart_data_end;
+	send_object["data_key"] = chart_data->GetDataKey();
 	
 	std::string content = send_object.dump();
 	SmGlobal* global = SmGlobal::GetInstance();
@@ -430,7 +470,7 @@ void SmChartData::SendChartData(int session_id)
 		SendNormalChartData(data, session_id);
 	}
 
-	SendChartDataEnd(session_id);
+	SendChartDataEnd(session_id, shared_from_this());
 }
 
 SmChartDataItem* SmChartData::GetChartDataItem(std::string date_time)
@@ -458,6 +498,11 @@ void SmChartData::SendCycleChartData(SmChartDataItem item)
 	send_object["l"] = item.l;
 	send_object["c"] = item.c;
 	send_object["v"] = item.v;
+
+	if (item.date_time.length() == 0) {
+		int i = 0;
+		i = i + 1;
+	}
 
 	std::string content = send_object.dump();
 	SmGlobal* global = SmGlobal::GetInstance();

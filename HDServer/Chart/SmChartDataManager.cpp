@@ -242,6 +242,10 @@ void SmChartDataManager::ExecuteTask(SmChartDataRequest&& req)
 			req.product_code = symbol->CategoryCode();
 		}
 	}
+
+	CString msg;
+	msg.Format("차트데이터 요청 symbol_code = %s, chart_type = %d, cycle = %d\n", req.symbolCode.c_str(), (int)req.chartType, req.cycle);
+	TRACE(msg);
 	// 차트데이터 등록해 준다.
 	std::shared_ptr<SmChartData> chart_data = SmChartDataManager::GetInstance()->AddChartData(req.symbolCode, (int)req.chartType, req.cycle);
 	// 데이터가 없으면 서버에 요청을 한다. 그리고 사이클 데이터인 경우 무조건 요청을 한다.

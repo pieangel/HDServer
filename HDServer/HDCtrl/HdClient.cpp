@@ -263,8 +263,12 @@ int HdClient::GetChartData(SmChartDataRequest req)
 			return -1;
 		if (req.chartType == SmChartType::TICK)
 			return GetChartDataLongCycle(req);
-		else if (req.chartType == SmChartType::MIN)
-			return GetChartDataShortCycle(req);
+		else if (req.chartType == SmChartType::MIN) {
+			if (req.cycle <= 60)
+				return GetChartDataShortCycle(req);
+			else
+				return GetChartDataLongCycle(req);
+		}
 		else if (req.chartType == SmChartType::DAY)
 			return GetChartDataLongCycle(req);
 		else if (req.chartType == SmChartType::WEEK)
@@ -1483,7 +1487,7 @@ void HdClient::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
 		if (strDate.GetLength() == 0)
 			continue;
 
-		msg.Format(_T("OnRcvdAbroadChartData ::code = %s, index = %d, date = %s, t = %s, o = %s, h = %s, l = %s, c = %s, v = %s\n"), req.symbolCode.c_str(), i, strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
+		msg.Format(_T("OnRcvdAbroadChartData ::code = %s, index = %d, cycle = %d, date = %s, t = %s, o = %s, h = %s, l = %s, c = %s, v = %s\n"), req.symbolCode.c_str(), i, chart_data->Cycle(), strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
 		TRACE(msg);
 
 		SmChartDataItem data;
@@ -1503,7 +1507,7 @@ void HdClient::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
 
 		// 차트데이터에 추가한다.
 		std::shared_ptr<SmChartData> chart_data = SmChartDataManager::GetInstance()->AddChartData(data);
-		chart_data->AddData(data);
+		
 
 		// 전체 갯수와 현재 갯수가 일치하면 차트 데이터를 받았다고 표시한다.
 		if (total_count == current_count) {
@@ -1516,17 +1520,18 @@ void HdClient::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
 		if (req.reqType == SmChartDataReqestType::CYCLE) {
 			// 최소 한번 서버로 부터 받은 차트만 보낸다.
 			if (chart_data->Received()) {
-				SmChartData::SendCycleChartData(data);
+				chart_data->UpdateData(data);
 			}
 		}
 		else {
+			chart_data->AddData(data);
 			SmChartData::SendNormalChartData(data, req.session_id);
 		}
 
 	}
 
 	if (req.reqType == SmChartDataReqestType::FIRST) {
-		SmChartData::SendChartDataEnd(req.session_id);
+		SmChartData::SendChartDataEnd(req.session_id, chart_data);
 	}
 
 	// 차트 데이터 수신 요청 목록에서 제거한다.
@@ -1568,7 +1573,7 @@ void HdClient::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
 	std::vector<SmChartDataItem> chart_vec;
 	// 가장 최근것이 가장 먼저 온다. 따라서 가장 과거의 데이터를 먼저 가져온다.
 	// Received the chart data first.
-	for (int i = 0; i < nRepeatCnt; ++i) {
+	for (int i = nRepeatCnt - 1; i >= 0; --i) {
 		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "국내일자");
 		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "국내시간");
 		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "시가");
@@ -1582,7 +1587,7 @@ void HdClient::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
 		if (strDate.GetLength() == 0)
 			continue;
 
-		msg.Format(_T("OnRcvdAbroadChartData :: index = %d, symbol_code = %s, date = %s, t = %s, o = %s, h = %s, l = %s, c = %s, v = %s\n"), i, symbol_code, strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
+		msg.Format(_T("OnRcvdAbroadChartData :: index = %d, symbol_code = %s, cycle = %d, date = %s, t = %s, o = %s, h = %s, l = %s, c = %s, v = %s\n"), i, symbol_code, chart_data->Cycle(), strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
 		TRACE(msg);
 
 
@@ -1598,11 +1603,12 @@ void HdClient::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
 		data.o = _ttoi(strOpen);
 		data.c = _ttoi(strClose);
 		data.v = _ttoi(strVol);
-
+		data.total_count = total_count;
+		data.current_count = current_count;
 
 		// 차트데이터에 추가한다.
 		std::shared_ptr<SmChartData> chart_data = SmChartDataManager::GetInstance()->AddChartData(data);
-		chart_data->AddData(data);
+		
 
 		// 전체 갯수와 현재 갯수가 일치하면 차트 데이터를 받았다고 표시한다.
 		if (total_count == current_count) {
@@ -1615,10 +1621,11 @@ void HdClient::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
 		if (req.reqType == SmChartDataReqestType::CYCLE) {
 			// 최소 한번 서버로 부터 받은 차트만 보낸다.
 			if (chart_data->Received()) {
-				SmChartData::SendCycleChartData(data);
+				chart_data->UpdateData(data);
 			}
 		}
 		else {
+			chart_data->AddData(data);
 			SmChartData::SendNormalChartData(data, req.session_id);
 		}
 
@@ -1626,7 +1633,7 @@ void HdClient::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
 	}
 
 	if (req.reqType == SmChartDataReqestType::FIRST) {
-		SmChartData::SendChartDataEnd(req.session_id);
+		SmChartData::SendChartDataEnd(req.session_id, chart_data);
 	}
 
 	// 차트 데이터 수신 요청 목록에서 제거한다.
@@ -3244,11 +3251,13 @@ void HdClient::OnRcvdDomesticChartData(CString& sTrCode, LONG& nRqID)
 			data.o = _ttoi(strOpen);
 			data.c = _ttoi(strClose);
 			data.v = _ttoi(strVol);
+			data.total_count = total_count;
+			data.current_count = current_count;
 
 
 			// 차트데이터에 추가한다.
 			std::shared_ptr<SmChartData> chart_data = SmChartDataManager::GetInstance()->AddChartData(data);
-			chart_data->AddData(data);
+			
 
 			// 전체 갯수와 현재 갯수가 일치하면 차트 데이터를 받았다고 표시한다.
 			if (total_count == current_count) {
@@ -3261,17 +3270,18 @@ void HdClient::OnRcvdDomesticChartData(CString& sTrCode, LONG& nRqID)
 			if (req.reqType == SmChartDataReqestType::CYCLE) {
 				// 최소 한번 서버로 부터 받은 차트만 보낸다.
 				if (chart_data->Received()) {
-					SmChartData::SendCycleChartData(data);
+					chart_data->UpdateData(data);
 				}
 			}
 			else {
+				chart_data->AddData(data);
 				SmChartData::SendNormalChartData(data, req.session_id);
 			}
 
 		}
 
 		if (req.reqType == SmChartDataReqestType::FIRST) {
-			SmChartData::SendChartDataEnd(req.session_id);
+			SmChartData::SendChartDataEnd(req.session_id, chart_data);
 		}
 
 		// 차트 데이터 수신 요청 목록에서 제거한다.

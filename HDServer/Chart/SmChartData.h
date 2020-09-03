@@ -8,7 +8,7 @@
 #include <map>
 #include <array>
 #include <mutex>
-class SmChartData
+class SmChartData : public std::enable_shared_from_this<SmChartData>
 {
 private:
 	// 차트데이터를 이미 받았음을 표시한다.
@@ -41,6 +41,7 @@ public:
 	}
 	void AddChartData(SmChartDataItem&& data);
 	void AddData(SmChartDataItem& data_item);
+	void UpdateData(SmChartDataItem& data_item);
 
 
 	std::map<std::string, SmChartDataItem>& GetDataItemList() {
@@ -108,6 +109,6 @@ public:
 	// 사이클 데이터를 서버로 전송한다.
 	static void SendCycleChartData(SmChartDataItem item);
 	static void SendNormalChartData(SmChartDataItem item, int session_id);
-	static void SendChartDataEnd(int session_id);
+	static void SendChartDataEnd(int session_id, std::shared_ptr<SmChartData> chart_data);
 };
 
